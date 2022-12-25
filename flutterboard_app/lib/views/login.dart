@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
+import 'package:flutterboard_app/views/findid.dart';
+import 'package:flutterboard_app/views/findpw.dart';
 import 'package:flutterboard_app/views/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -93,6 +95,40 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                     '로그인',
                   ),
                 ),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const FindId();
+                            },
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'ID 찾기',
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const FindPw();
+                            },
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '비밀번호 찾기',
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),

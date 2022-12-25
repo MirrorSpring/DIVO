@@ -8,7 +8,30 @@
 	<!-- Desc: 로그인 -->
 	<!-- Date: 2022-12-25 -->
 	<select id="Login" resultType="int">
-		select count(*) from `user` where userid=#{userid} and userpw=#{userpw};
+		select count(*) from `user` where
+		userid=#{userid} and userpw=#{userpw};
 	</select>
 
+	<!-- Desc: ID 찾기 -->
+	<!-- Date: 2022-12-25 -->
+	<select id="FindId" resultType="String">
+		select userid from `user` where
+		username=#{username} and birthday=#{birthday}
+		and deletedate is null;
+	</select>
+
+	<!-- Desc: 비밀번호 찾기 -->
+	<!-- Date: 2022-12-26 -->
+	<select id="FindPw" resultType="int">
+		select count(*) from `user` where
+		username=#{username} and birthday=#{birthday} and userid=#{userid}
+		and
+		deletedate is null;
+	</select>
+	
+	<!-- Desc: 비밀번호 재설정 -->
+	<!-- Date: 2022-12-26 -->
+	<update id="ResetPw">
+		update `user` set userpw=#{userpw}, updatedate=now() where userid=#{userid};
+	</update>
 </mapper>

@@ -20,7 +20,7 @@ public class BoardController {
 	@RequestMapping("/main")
 	public String ShowMain(Model model) throws Exception{
 		service.ShowMain(model);
-		return "showmain";
+		return "result";
 	}
 	
 	//Desc: 게시글 상세보기 출력
@@ -28,7 +28,7 @@ public class BoardController {
 	@RequestMapping("/boarddetail")
 	public String BoardDetail(HttpServletRequest request, Model model) throws Exception{
 		service.BoardDetail(request, model);
-		return "boarddetail";
+		return "result";
 	}
 	
 	//Desc: 게시글 쓰기
