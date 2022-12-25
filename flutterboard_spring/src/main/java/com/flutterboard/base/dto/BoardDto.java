@@ -1,5 +1,7 @@
 package com.flutterboard.base.dto;
 
+import java.time.LocalDateTime;
+
 public class BoardDto {
 
 	int boardid;
@@ -8,6 +10,18 @@ public class BoardDto {
 	String title;
 	String writedate;
 	String updatedate;
+	String content;
+
+	public BoardDto(String writerid, String username, String title, String writedate, String updatedate,
+			String content) {
+		super();
+		this.writerid = writerid;
+		this.username = username;
+		this.title = title;
+		this.writedate = writedate;
+		this.updatedate = updatedate;
+		this.content = content;
+	}
 
 	public BoardDto(int boardid, String writerid, String username, String title, String writedate, String updatedate) {
 		super();
@@ -17,6 +31,14 @@ public class BoardDto {
 		this.title = title;
 		this.writedate = writedate;
 		this.updatedate = updatedate;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public int getBoardid() {

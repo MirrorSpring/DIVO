@@ -50,49 +50,63 @@ class _HomeState extends State<Home> {
                         getJsonData();
                       });
                     },
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Padding(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        child: Container(
+                          color: Colors.blue[50],
+                          child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Row(
+                            child: Column(
                               children: [
-                                Text(
-                                  '제목: ${data[index]['title']}',
-                                  style: const TextStyle(
-                                    fontSize: 20,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '제목: ${data[index]['title']}',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      Text(
+                                        data[index]['updatedate'] == null
+                                            ? ''
+                                            : '  (수정됨)',
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '작성자: ${data[index]['writername']}(@${data[index]['writerid']})',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '작성일자: ${data[index]['writedate']}',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  '작성자: ${data[index]['writername']}(${data[index]['writerid']})',
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  '작성일자: ${data[index]['writedate']}',
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   );
@@ -109,8 +123,7 @@ class _HomeState extends State<Home> {
   //Date: 2022-12-25
   Future<bool> getJsonData() async {
     data.clear();
-    var url = Uri.parse(
-        'http://${Static.ipAddress}:8080/main');
+    var url = Uri.parse('http://${Static.ipAddress}:8080/main');
     var response = await http.get(url);
     var dataConvertedJson = json.decode(utf8.decode(response.bodyBytes));
     List result = dataConvertedJson['results'];

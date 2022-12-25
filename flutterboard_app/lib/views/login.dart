@@ -137,6 +137,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

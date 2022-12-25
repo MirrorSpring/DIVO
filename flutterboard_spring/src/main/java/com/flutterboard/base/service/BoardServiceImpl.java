@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import com.flutterboard.base.dao.BoardDao;
 import com.flutterboard.base.dto.BoardDto;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class BoardServiceImpl implements BoardService {
 	
@@ -40,6 +42,30 @@ public class BoardServiceImpl implements BoardService {
 		
 	    jsonList.put("results",itemList);
 	    model.addAttribute("ITEM",jsonList.toJSONString());
+	}
+
+	//Desc: 게시글 상세보기 출력
+	//Date: 2022-12-25
+	@Override
+	public void BoardDetail(HttpServletRequest request, Model model) throws Exception {
+		int boardid=Integer.parseInt(request.getParameter("boardid"));
+		BoardDto dto=dao.BoardDetail(boardid);
+		
+	    JSONObject jsonList = new JSONObject();
+	    JSONArray itemList = new JSONArray();
+	    
+        JSONObject tempJson = new JSONObject();
+        tempJson.put("writername", dto.getUsername());
+        tempJson.put("writerid", dto.getWriterid());
+        tempJson.put("title", dto.getTitle());
+        tempJson.put("writedate", dto.getWritedate());
+        tempJson.put("updatedate", dto.getUpdatedate());
+        tempJson.put("content", dto.getContent());
+        itemList.add(tempJson);
+        
+	    jsonList.put("results",itemList);
+	    model.addAttribute("ITEM",jsonList.toJSONString());
+		
 	}
 
 }

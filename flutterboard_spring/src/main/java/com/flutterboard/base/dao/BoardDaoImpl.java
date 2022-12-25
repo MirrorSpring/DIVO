@@ -19,4 +19,12 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.selectList(nameSpace + ".ShowMain");
 	}
 
+	//Desc: 게시글 상세보기 출력
+	//Date: 2022-12-25
+	@Override
+	public BoardDto BoardDetail(int boardid) throws Exception {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(nameSpace + ".BoardDetail");
+	}
+
 }
