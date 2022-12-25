@@ -5,6 +5,8 @@
 
 <mapper namespace="com.flutterboard.base.dao.UserDao">
 
+	<!-- Desc: 로그인 -->
+	<!-- Date: 2022-12-25 -->
 	<select id="Login" resultType="int">
 		select count(*) from `user` where userid=#{userid} and userpw=#{userpw};
 	</select>

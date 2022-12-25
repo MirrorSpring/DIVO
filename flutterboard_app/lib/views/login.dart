@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:flutterboard_app/views/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {

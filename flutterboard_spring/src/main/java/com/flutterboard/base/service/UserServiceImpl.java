@@ -16,6 +16,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserDao dao;
 
+	//Desc: 로그인
+	//Date: 2022-12-25
 	@Override
 	public void Login(HttpServletRequest request, Model model) throws Exception {
 		String userid=request.getParameter("userid");

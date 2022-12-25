@@ -15,6 +15,8 @@ public class UserController {
 	@Autowired
 	UserService service;
 	
+	//Desc: 로그인
+	//Date: 2022-12-25
 	@RequestMapping("/login")
 	public String login(HttpServletRequest request, Model model) throws Exception{
 		service.Login(request, model);
