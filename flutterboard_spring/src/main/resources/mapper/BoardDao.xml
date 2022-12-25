@@ -40,4 +40,10 @@
 		update board set title=#{title}, content=#{content}, boardupdatedate=now()
 		where boardid=#{boardid};
 	</update>
+	
+	<!-- Desc: 게시글 삭제 -->
+	<!-- Date: 2022-12-25 -->
+	<update id="DeleteBoard">
+		update board set deletedate=now() where boardid=#{boardid};
+	</update>
 </mapper>

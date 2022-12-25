@@ -94,23 +94,45 @@ class _BoardDetailState extends State<BoardDetail> {
                     ),
                   ],
                 ),
-                Switch(
-                  value: updatemode,
-                  onChanged: (value) {
-                    setState(() {
-                      updatemode = value;
-                    });
-                  },
+                Row(
+                  children: [
+                    const Text(
+                      '수정 모드',
+                    ),
+                    Switch(
+                      value: updatemode,
+                      onChanged: (value) {
+                        setState(() {
+                          updatemode = value;
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 Visibility(
                   visible: updatemode,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      updateBoard();
-                    },
-                    child: const Text(
-                      '수정',
-                    ),
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          updateBoard();
+                        },
+                        child: const Text(
+                          '수정',
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _showDeleteConfirm(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                        child: const Text(
+                          '삭제',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -144,8 +166,7 @@ class _BoardDetailState extends State<BoardDetail> {
   //Date: 2022-12-25
   Future<bool> updateBoard() async {
     var url = Uri.parse(
-        'http://${Static.ipAddress}:8080/boardupdate?boardid=${widget.boardid}&title=${titleCont.text}&content=${contentCont.text}');
-        print(widget.boardid);
+        'http://${Static.ipAddress}:8080/updateboard?boardid=${widget.boardid}&title=${titleCont.text}&content=${contentCont.text}');
     await http.get(url).whenComplete(() {
       _showUpdateConfirm();
     });
@@ -173,11 +194,61 @@ class _BoardDetailState extends State<BoardDetail> {
                 getBoardDetail();
                 FocusScope.of(context).unfocus();
                 setState(() {
-                  updatemode=false;
+                  updatemode = false;
                 });
               },
               child: const Text(
                 '확인',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //Desc: 게시글 삭제
+  //Date: 2022-12-25
+  Future<bool> deleteBoard() async {
+    var url = Uri.parse(
+        'http://${Static.ipAddress}:8080/deleteboard?boardid=${widget.boardid}');
+    await http.get(url);
+    return true;
+  }
+
+  //Desc: 게시글 삭제 확인
+  //Date: 2022-12-25
+  _showDeleteConfirm(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '게시글 삭제',
+          ),
+          content: const Text(
+            '게시글을 삭제하시겠습니까?.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                FocusScope.of(context).unfocus();
+              },
+              child: const Text(
+                '아니오',
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                deleteBoard().whenComplete(() {
+                  Navigator.of(context).pop();
+                  Navigator.pop(context);
+                });
+              },
+              child: const Text(
+                '예',
               ),
             ),
           ],

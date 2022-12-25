@@ -91,4 +91,12 @@ public class BoardServiceImpl implements BoardService {
 		
 	}
 
+	//Desc: 게시글 삭제
+	//Date: 2022-12-25
+	@Override
+	public void DeleteBoard(HttpServletRequest request) throws Exception {
+		int boardid=Integer.parseInt(request.getParameter("boardid"));
+		dao.DeleteBoard(boardid);
+	}
+
 }

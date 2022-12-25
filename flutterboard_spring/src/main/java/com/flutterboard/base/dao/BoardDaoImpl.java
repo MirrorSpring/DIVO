@@ -43,4 +43,11 @@ public class BoardDaoImpl implements BoardDao {
 		sqlSession.update(nameSpace + ".UpdateBoard");
 	}
 
+	//Desc: 게시글 삭제
+	//Date: 2022-12-25
+	@Override
+	public void DeleteBoard(int boardid) throws Exception {
+		sqlSession.update(nameSpace + ".DeleteBoard");
+	}
+
 }

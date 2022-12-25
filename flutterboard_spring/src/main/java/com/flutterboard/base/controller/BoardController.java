@@ -40,8 +40,15 @@ public class BoardController {
 	
 	//Desc: 게시글 수정
 	//Date: 2022-12-25
-	@RequestMapping("/boardupdate")
+	@RequestMapping("/updateboard")
 	public void UpdateBoard(HttpServletRequest request) throws Exception{
 		service.UpdateBoard(request);
+	}
+	
+	//Desc: 게시글 삭제
+	//Date: 2022-12-25
+	@RequestMapping("/deleteboard")
+	public void DeleteBoard(HttpServletRequest request) throws Exception{
+		service.DeleteBoard(request);
 	}
 }
