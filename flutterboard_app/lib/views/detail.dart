@@ -43,7 +43,7 @@ class _BoardDetailState extends State<BoardDetail> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            data.isEmpty ? "" : '${data[0]['writername']}님의 글',
+            data.isEmpty ? "" : '${data[0]['writername']}(@${data[0]['writerid']})님의 글',
           ),
         ),
         body: Center(
