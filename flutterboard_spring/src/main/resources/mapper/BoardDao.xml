@@ -9,9 +9,12 @@
 	<!-- Date: 2022-12-25 -->
 	<select id="ShowMain"
 		resultType="com.flutterboard.base.dto.BoardDto">
-		select boardid, writerid, username, title, writedate, board.updatedate as updatedate
+		select boardid, writerid, username, title, writedate,
+		boardupdatedate
 		from `user`, board
-		where userid=writerid and board.deletedate is null and `user`.deletedate is null order by writedate desc;
+		where userid=writerid and
+		board.deletedate is null and `user`.deletedate is null order by
+		writedate desc;
 	</select>
 
 	<!-- Desc: 게시글 상세보기 출력 -->
@@ -19,14 +22,22 @@
 	<select id="BoardDetail"
 		resultType="com.flutterboard.base.dto.BoardDto">
 		select title, username, writerid, writedate, board.content,
-		board.updatedate from board, `user` where boardid=#{boardid} and
+		boardupdatedate from board, `user` where boardid=#{boardid} and
 		writerid=userid;
 	</select>
-	
+
 	<!-- Desc: 게시글 쓰기 -->
 	<!-- Date: 2022-12-25 -->
 	<insert id="Write">
-		insert into board (writerid, title, content, writedate)
+		insert into board (writerid, title, content,
+		writedate)
 		values (#{writerid}, #{title}, #{content}, now());
 	</insert>
+
+	<!-- Desc: 게시글 수정 -->
+	<!-- Date: 2022-12-25 -->
+	<update id="UpdateBoard">
+		update board set title=#{title}, content=#{content}, boardupdatedate=now()
+		where boardid=#{boardid};
+	</update>
 </mapper>

@@ -35,4 +35,12 @@ public class BoardDaoImpl implements BoardDao {
 		
 	}
 
+	//Desc: 게시글 수정
+	//Date: 2022-12-25
+	@Override
+	public void UpdateBoard(String title, String content, int boardid) throws Exception {
+		// TODO Auto-generated method stub
+		sqlSession.update(nameSpace + ".UpdateBoard");
+	}
+
 }

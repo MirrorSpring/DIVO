@@ -34,9 +34,8 @@ public class BoardServiceImpl implements BoardService {
             tempJson.put("writername", dtos.get(i).getUsername());
             tempJson.put("writerid", dtos.get(i).getWriterid());
             tempJson.put("title", dtos.get(i).getTitle());
-            tempJson.put("title", dtos.get(i).getTitle());
             tempJson.put("writedate", dtos.get(i).getWritedate());
-            tempJson.put("updatedate", dtos.get(i).getUpdatedate());
+            tempJson.put("updatedate", dtos.get(i).getBoardupdatedate());
             itemList.add(tempJson);
 	    }
 		
@@ -59,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
         tempJson.put("writerid", dto.getWriterid());
         tempJson.put("title", dto.getTitle());
         tempJson.put("writedate", dto.getWritedate());
-        tempJson.put("updatedate", dto.getUpdatedate());
+        tempJson.put("updatedate", dto.getBoardupdatedate());
         tempJson.put("content", dto.getContent());
         itemList.add(tempJson);
         
@@ -77,6 +76,18 @@ public class BoardServiceImpl implements BoardService {
 		String content=request.getParameter("content");
 		
 		dao.Write(writerid, title, content);
+		
+	}
+
+	//Desc: 게시글 수정
+	//Date: 2022-12-25
+	@Override
+	public void UpdateBoard(HttpServletRequest request) throws Exception {
+		String title=request.getParameter("title");
+		String content=request.getParameter("content");
+		int boardid=Integer.parseInt(request.getParameter("boardid"));
+		
+		dao.UpdateBoard(title, content, boardid);
 		
 	}
 

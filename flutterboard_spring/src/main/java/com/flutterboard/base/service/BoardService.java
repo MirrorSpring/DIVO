@@ -11,4 +11,5 @@ public interface BoardService {
 	public void ShowMain(Model model) throws Exception;
 	public void BoardDetail(HttpServletRequest request, Model model) throws Exception;
 	public void Write(HttpServletRequest request) throws Exception;
+	public void UpdateBoard(HttpServletRequest request) throws Exception;
 }

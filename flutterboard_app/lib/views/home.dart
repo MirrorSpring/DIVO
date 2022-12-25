@@ -90,10 +90,10 @@ class _HomeState extends State<Home> {
                                         ),
                                       ),
                                       Text(
-                                        (data[index]['updatedate'] == null||data[index]['updatedate'] == "")
+                                        (data[index]['updatedate'] ==data[index]['writedate'])
                                             ? ''
                                             : '  (수정됨)',
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),

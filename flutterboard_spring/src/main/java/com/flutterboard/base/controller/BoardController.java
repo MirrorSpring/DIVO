@@ -37,4 +37,11 @@ public class BoardController {
 	public void Write(HttpServletRequest request) throws Exception{
 		service.Write(request);
 	}
+	
+	//Desc: 게시글 수정
+	//Date: 2022-12-25
+	@RequestMapping("/boardupdate")
+	public void UpdateBoard(HttpServletRequest request) throws Exception{
+		service.UpdateBoard(request);
+	}
 }

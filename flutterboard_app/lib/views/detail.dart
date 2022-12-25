@@ -16,6 +16,7 @@ class BoardDetail extends StatefulWidget {
 class _BoardDetailState extends State<BoardDetail> {
   late List data;
   late bool updatemode;
+  late bool buttonvisible;
   late TextEditingController titleCont;
   late TextEditingController contentCont;
 
@@ -26,11 +27,12 @@ class _BoardDetailState extends State<BoardDetail> {
     contentCont = TextEditingController();
     data = [];
     getBoardDetail().whenComplete(() {
-      titleCont.text=data.isEmpty?"":data[0]['title'];
-      contentCont.text=data.isEmpty?"":data[0]['content'];
+      titleCont.text = data.isEmpty ? "" : data[0]['title'];
+      contentCont.text = data.isEmpty ? "" : data[0]['content'];
     });
     setState(() {
-      updatemode = true;
+      updatemode = false;
+      buttonvisible = false;
     });
   }
 
@@ -43,53 +45,76 @@ class _BoardDetailState extends State<BoardDetail> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            data.isEmpty ? "" : '${data[0]['writername']}(@${data[0]['writerid']})님의 글',
+            data.isEmpty
+                ? ""
+                : '${data[0]['writername']}(@${data[0]['writerid']})님의 글',
           ),
         ),
-        body: Center(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    '제목: ',
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: TextField(
-                      controller: titleCont,
-                      readOnly: updatemode,
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      '제목: ',
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        controller: titleCont,
+                        readOnly: !updatemode,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '작성일자: ${data.isEmpty ? "" : data[0]['writedate']}',
+                    ),
+                  ],
+                ),
+                Row(
+                  children: const [
+                    Text(
+                      '내용',
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      height: 300,
+                      child: CupertinoTextField(
+                        controller: contentCont,
+                        readOnly: !updatemode,
+                      ),
+                    ),
+                  ],
+                ),
+                Switch(
+                  value: updatemode,
+                  onChanged: (value) {
+                    setState(() {
+                      updatemode = value;
+                    });
+                  },
+                ),
+                Visibility(
+                  visible: updatemode,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      updateBoard();
+                    },
+                    child: const Text(
+                      '수정',
                     ),
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    '작성일자: ${data.isEmpty?"":data[0]['writedate']}',
-                  ),
-                ],
-              ),
-              Row(
-                children: const [
-                  Text(
-                    '내용',
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 300,
-                    height: 300,
-                    child: CupertinoTextField(
-                      controller: contentCont,
-                      readOnly: updatemode,
-                    ),
-                  ),
-                ],
-              )
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -113,5 +138,51 @@ class _BoardDetailState extends State<BoardDetail> {
     });
 
     return true;
+  }
+
+  //Desc: 게시글 수정
+  //Date: 2022-12-25
+  Future<bool> updateBoard() async {
+    var url = Uri.parse(
+        'http://${Static.ipAddress}:8080/boardupdate?boardid=${widget.boardid}&title=${titleCont.text}&content=${contentCont.text}');
+        print(widget.boardid);
+    await http.get(url).whenComplete(() {
+      _showUpdateConfirm();
+    });
+    return true;
+  }
+
+  //Desc: 게시글 수정 확인
+  //Date: 2022-12-25
+  _showUpdateConfirm() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '게시글 수정',
+          ),
+          content: const Text(
+            '게시글이 수정되었습니다.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                getBoardDetail();
+                FocusScope.of(context).unfocus();
+                setState(() {
+                  updatemode=false;
+                });
+              },
+              child: const Text(
+                '확인',
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
