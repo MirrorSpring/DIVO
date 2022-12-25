@@ -11,7 +11,7 @@
 		resultType="com.flutterboard.base.dto.BoardDto">
 		select boardid, writerid, username, title, writedate, board.updatedate as updatedate
 		from `user`, board
-		where userid=writerid and board.deletedate is null and `user`.deletedate is null;
+		where userid=writerid and board.deletedate is null and `user`.deletedate is null order by writedate desc;
 	</select>
 
 	<!-- Desc: 게시글 상세보기 출력 -->
@@ -22,4 +22,11 @@
 		board.updatedate from board, `user` where boardid=#{boardid} and
 		writerid=userid;
 	</select>
+	
+	<!-- Desc: 게시글 쓰기 -->
+	<!-- Date: 2022-12-25 -->
+	<insert id="Write">
+		insert into board (writerid, title, content, writedate)
+		values (#{writerid}, #{title}, #{content}, now());
+	</insert>
 </mapper>

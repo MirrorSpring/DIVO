@@ -68,4 +68,16 @@ public class BoardServiceImpl implements BoardService {
 		
 	}
 
+	//Desc: 게시글 쓰기
+	//Date: 2022-12-25
+	@Override
+	public void Write(HttpServletRequest request) throws Exception {
+		String writerid=request.getParameter("writerid");
+		String title=request.getParameter("title");
+		String content=request.getParameter("content");
+		
+		dao.Write(writerid, title, content);
+		
+	}
+
 }

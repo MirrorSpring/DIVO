@@ -30,4 +30,11 @@ public class BoardController {
 		service.BoardDetail(request, model);
 		return "boarddetail";
 	}
+	
+	//Desc: 게시글 쓰기
+	//Date: 2022-12-25
+	@RequestMapping("/write")
+	public void Write(HttpServletRequest request) throws Exception{
+		service.Write(request);
+	}
 }

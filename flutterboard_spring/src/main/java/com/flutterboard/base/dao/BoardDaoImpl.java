@@ -27,4 +27,12 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.selectOne(nameSpace + ".BoardDetail");
 	}
 
+	//Desc: 게시글 쓰기
+	//Date: 2022-12-25
+	@Override
+	public void Write(String writerid, String title, String content) throws Exception {
+		sqlSession.insert(nameSpace + ".Write");
+		
+	}
+
 }

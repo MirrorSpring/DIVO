@@ -190,6 +190,6 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
   //Date: 2022-12-23
   _saveId() async {
     final pref = await SharedPreferences.getInstance();
-    pref.setString('p_userid', idCont.text);
+    pref.setString('userid', idCont.text);
   }
 }

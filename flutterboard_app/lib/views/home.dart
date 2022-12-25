@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:flutterboard_app/views/detail.dart';
+import 'package:flutterboard_app/views/write.dart';
 import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
@@ -29,6 +30,25 @@ class _HomeState extends State<Home> {
         title: const Text(
           'Main',
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const Write();
+                  },
+                ),
+              ).then((value) {
+                getJsonData();
+              });
+            },
+            icon: const Icon(
+              Icons.create,
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: data.isEmpty
@@ -70,7 +90,7 @@ class _HomeState extends State<Home> {
                                         ),
                                       ),
                                       Text(
-                                        data[index]['updatedate'] == null
+                                        (data[index]['updatedate'] == null||data[index]['updatedate'] == "")
                                             ? ''
                                             : '  (수정됨)',
                                       )
