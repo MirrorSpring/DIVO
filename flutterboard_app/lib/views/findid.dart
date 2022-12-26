@@ -15,6 +15,7 @@ class _FindIdState extends State<FindId> {
   late TextEditingController nameCont;
   late TextEditingController birthdayCont;
   late List data;
+  late bool correctbday;
 
   @override
   void initState() {
@@ -23,41 +24,109 @@ class _FindIdState extends State<FindId> {
     nameCont = TextEditingController();
     birthdayCont = TextEditingController();
     data = [];
+    correctbday = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'findid',
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'ID 찾기',
+          ),
         ),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            TextField(
-              controller: nameCont,
-              decoration: const InputDecoration(
-                labelText: "이름",
+        body: Center(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 400,
+                  ),
+                  Column(
+                    children: const [
+                      SizedBox(
+                        height: 35,
+                      ),
+                      SizedBox(
+                        height: 70,
+                        child: Text(
+                          '이름:   ',
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 70,
+                        child: Text(
+                          '생년월일:   ',
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        height: 70,
+                        child: TextField(
+                          controller: nameCont,
+                          decoration: const InputDecoration(
+                            labelText: "이름",
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        height: 70,
+                        child: TextField(
+                          controller: birthdayCont,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: birthdayCont.text.trim().isNotEmpty
+                                ? correctbday
+                                    ? ''
+                                    : '생년월일을 정확히 입력해 주세요.'
+                                : '숫자 8자리(ex: 19000101)',
+                          ),
+                          onChanged: (value) {
+                            if (Static.birthdayReg.hasMatch(value.trim())) {
+                              setState(() {
+                                correctbday = true;
+                              });
+                            } else {
+                              setState(() {
+                                correctbday = false;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            TextField(
-              controller: birthdayCont,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "생년월일(ex: 19900101)",
+              ElevatedButton(
+                onPressed: nameCont.text.trim().isNotEmpty && correctbday
+                    ? () {
+                        findId().whenComplete(() {
+                          showId(context);
+                        });
+                      }
+                    : null,
+                child: const Text('ID 찾기'),
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                findId().whenComplete(() {
-                  showId(context);
-                });
-              },
-              child: const Text('ID 찾기'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

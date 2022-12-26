@@ -18,6 +18,7 @@ class _FindPwState extends State<FindPw> {
   late TextEditingController pwCont;
   late TextEditingController pwCheckCont;
   late List data;
+  late bool correctbday;
 
   @override
   void initState() {
@@ -29,47 +30,134 @@ class _FindPwState extends State<FindPw> {
     pwCont = TextEditingController();
     pwCheckCont = TextEditingController();
     data = [];
+    correctbday = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'findid',
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            '비밀번호 찾기',
+          ),
         ),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            TextField(
-              controller: idCont,
-              decoration: const InputDecoration(
-                labelText: "ID",
+        body: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 100,
               ),
-            ),
-            TextField(
-              controller: nameCont,
-              decoration: const InputDecoration(
-                labelText: "이름",
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: const [
+                      SizedBox(
+                        height: 35,
+                      ),
+                      SizedBox(
+                        height: 70,
+                        child: Text(
+                          'ID:   ',
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 70,
+                        child: Text(
+                          '이름:   ',
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 70,
+                        child: Text(
+                          '생년월일:   ',
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            height: 70,
+                            child: TextField(
+                              controller: idCont,
+                              decoration: const InputDecoration(
+                                labelText: "ID",
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 200,
+                            height: 70,
+                            child: TextField(
+                              controller: nameCont,
+                              decoration: const InputDecoration(
+                                labelText: "이름",
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 200,
+                            height: 70,
+                            child: TextField(
+                              controller: birthdayCont,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: birthdayCont.text.trim().isNotEmpty
+                                    ? correctbday
+                                        ? ''
+                                        : '생년월일을 정확히 입력해 주세요.'
+                                    : '숫자 8자리(ex: 19000101)',
+                              ),
+                              onChanged: (value) {
+                                if (Static.birthdayReg.hasMatch(value.trim())) {
+                                  setState(() {
+                                    correctbday = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    correctbday = false;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            TextField(
-              controller: birthdayCont,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "생년월일(ex: 19900101)",
+              ElevatedButton(
+                onPressed: idCont.text.trim().isNotEmpty &&
+                        nameCont.text.trim().isNotEmpty &&
+                        correctbday
+                    ? () {
+                        findPw().whenComplete(() {
+                          resetPwView();
+                        });
+                      }
+                    : null,
+                child: const Text('비밀번호 찾기'),
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                findPw().whenComplete(() {
-                  resetPwView();
-                });
-              },
-              child: const Text('비밀번호 찾기'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -140,8 +228,8 @@ class _FindPwState extends State<FindPw> {
                   : TextButton(
                       onPressed: () {
                         resetPw();
-                          Navigator.of(context).pop();
-                          Navigator.pop(context);
+                        Navigator.of(context).pop();
+                        Navigator.pop(context);
                       },
                       child: const Text('비밀번호 재설정'),
                     ),

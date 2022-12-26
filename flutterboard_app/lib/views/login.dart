@@ -66,6 +66,9 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 50,
+                ),
                 const Icon(
                   Icons.account_circle_rounded,
                   size: 200,
