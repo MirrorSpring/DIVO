@@ -32,4 +32,11 @@ public class CommentDaoImpl implements CommentDao {
 		sqlSession.update(nameSpace + ".DeleteComment");
 	}
 
+	//Desc: 댓글 쓰기
+	//Date: 2022-12-27
+	@Override
+	public void Comment(int boardid, String userid, String commentcontent) throws Exception {
+		sqlSession.insert(nameSpace + ".Comment");
+	}
+
 }

@@ -22,8 +22,9 @@ class _BoardDetailState extends State<BoardDetail> {
   late TextEditingController titleCont;
   late TextEditingController contentCont;
   late TextEditingController commentupdateCont;
+  late TextEditingController commentCont;
   late bool editable = false;
-  late String userid;
+  late String? userid;
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _BoardDetailState extends State<BoardDetail> {
     titleCont = TextEditingController();
     contentCont = TextEditingController();
     commentupdateCont = TextEditingController();
+    commentCont = TextEditingController();
     setState(() {
       updatemode = false;
       buttonvisible = false;
@@ -209,6 +211,51 @@ class _BoardDetailState extends State<BoardDetail> {
             ),
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) {
+                return SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 300,
+                              child: TextField(
+                                controller: commentCont,
+                              ),
+                            ),
+                          ],
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            writeComment().whenComplete(() {
+                              Navigator.of(context).pop();
+                              _showWriteResult();
+                              commentCont.text="";
+                            });
+                          },
+                          child: const Text(
+                            '댓글 쓰기',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+          child: const Icon(
+            Icons.create,
+          ),
+        ),
       ),
     );
   }
@@ -360,7 +407,7 @@ class _BoardDetailState extends State<BoardDetail> {
 
   Future<bool> getUser() async {
     final pref = await SharedPreferences.getInstance();
-    userid = pref.getString('userid')!;
+    userid = pref.getString('userid');
 
     return true;
   }
@@ -465,5 +512,46 @@ class _BoardDetailState extends State<BoardDetail> {
         'http://${Static.ipAddress}:8080/deletecomment?commentid=${commentdata[index]['commentid']}');
     await http.get(url);
     return true;
+  }
+
+  //Desc: 댓글 쓰기
+  //Date: 2022-12-27
+  Future<bool> writeComment() async {
+    var url = Uri.parse(
+        'http://${Static.ipAddress}:8080/comment?boardid=${widget.boardid}&commentcontent=${commentCont.text.trim()}&userid=$userid');
+    await http.get(url);
+    return true;
+  }
+
+  //Desc: 댓글 쓰기 결과 확인
+  //Date: 2022-12-27
+  _showWriteResult(){
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '댓글 작성',
+          ),
+          content: const Text(
+            '댓글이 작성되었습니다.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                getBoardDetail();
+                getComment();
+                FocusScope.of(context).unfocus();
+              },
+              child: const Text(
+                '확인',
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

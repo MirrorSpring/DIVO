@@ -13,5 +13,7 @@ public interface CommentService {
 	public void UpdateComment(HttpServletRequest request) throws Exception;
 	
 	public void DeleteComment(HttpServletRequest request) throws Exception;
+	
+	public void Comment(HttpServletRequest request) throws Exception;
 
 }

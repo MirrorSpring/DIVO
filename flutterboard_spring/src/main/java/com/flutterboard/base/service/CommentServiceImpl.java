@@ -64,4 +64,15 @@ public class CommentServiceImpl implements CommentService {
 		dao.DeleteComment(commentid);
 	}
 
+	//Desc: 댓글 쓰기
+	//Date: 2022-12-27
+	@Override
+	public void Comment(HttpServletRequest request) throws Exception {
+		int boardid=Integer.parseInt(request.getParameter("boardid"));
+		String userid=request.getParameter("userid");
+		String commentcontent=request.getParameter("commentcontent");
+		
+		dao.Comment(boardid, userid, commentcontent);
+	}
+
 }

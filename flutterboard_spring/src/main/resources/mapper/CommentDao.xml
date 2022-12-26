@@ -24,4 +24,12 @@
 	<update id="DeleteComment">
 		update `comment` set commentdeletedate=now() where commentid=#{commentid};
 	</update>
+	
+	<!-- Desc: 댓글 쓰기 -->
+	<!-- Date: 2022-12-26 -->
+	<insert id="Comment">
+		insert into `comment` (c_boardid, c_userid, commentcontent, commentwritedate)
+		values (#{boardid}, #{userid}, #{commentcontent}, now());
+	</insert>
+	
 </mapper>

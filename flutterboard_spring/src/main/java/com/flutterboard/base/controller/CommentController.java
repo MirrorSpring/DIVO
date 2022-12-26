@@ -36,4 +36,11 @@ public class CommentController {
 	public void DeleteComment(HttpServletRequest request) throws Exception{
 		service.DeleteComment(request);
 	}
+	
+	//Desc: 댓글 쓰기
+	//Date: 2022-12-27
+	@RequestMapping("/comment")
+	public void Comment(HttpServletRequest request) throws Exception{
+		service.Comment(request);
+	}
 }

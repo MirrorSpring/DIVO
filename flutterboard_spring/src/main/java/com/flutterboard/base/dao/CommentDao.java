@@ -11,5 +11,7 @@ public interface CommentDao {
 	public void UpdateComment(String commentcontent, int commentid) throws Exception;
 	
 	public void DeleteComment(int commentid) throws Exception;
+	
+	public void Comment(int boardid, String userid, String commentcontent) throws Exception;
 
 }
