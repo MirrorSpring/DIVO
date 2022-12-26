@@ -144,6 +144,9 @@ class _FindPwState extends State<FindPw> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 70,
+              ),
               ElevatedButton(
                 onPressed: idCont.text.trim().isNotEmpty &&
                         nameCont.text.trim().isNotEmpty &&
