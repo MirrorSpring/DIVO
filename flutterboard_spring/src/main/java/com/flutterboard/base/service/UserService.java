@@ -21,5 +21,9 @@ public interface UserService {
 	public void Join(HttpServletRequest request) throws Exception;
 	
 	public void IDCheck(HttpServletRequest request, Model model) throws Exception;
+	
+	public void MyPage(HttpServletRequest request, Model model) throws Exception;
+	
+	public void UpdateUser(HttpServletRequest request) throws Exception;
 
 }

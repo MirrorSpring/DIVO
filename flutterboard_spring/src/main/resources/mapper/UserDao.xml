@@ -7,9 +7,9 @@
 
 	<!-- Desc: 로그인 -->
 	<!-- Date: 2022-12-25 -->
-	<select id="Login" resultType="int">
-		select count(*) from `user` where
-		userid=#{userid} and userpw=#{userpw};
+	<select id="Login" resultType="String">
+		select username from `user` where
+		userid=#{userid} and userpw=#{userpw} and deletedate is null;
 	</select>
 
 	<!-- Desc: ID 찾기 -->
@@ -59,4 +59,16 @@
 	<select id="IDCheck" resultType="int">
 		select count(*) from `user` where userid=#{userid} and deletedate is null;
 	</select>
+	
+	<!-- Desc: 회원 상세정보 조회 -->
+	<!-- Date: 2022-12-26 -->
+	<select id="MyPage" resultType="com.flutterboard.base.dto.UserDto">
+		select userid, username, userpw, birthday from `user` where userid=#{userid};
+	</select>
+	
+	<!-- Desc: 회원정보 수정 -->
+	<!-- Date: 2022-12-26 -->
+	<update id="UpdateUser">
+		update `user` set username=#{username}, userpw=#{userpw},birthday=#{birthday},updatedate=now() where userid=#{userid};
+	</update>
 </mapper>

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.flutterboard.base.dto.UserDto;
+
 public class UserDaoImpl implements UserDao {
 
 	SqlSession sqlSession;
@@ -12,7 +14,7 @@ public class UserDaoImpl implements UserDao {
 	// Desc: 로그인
 	// Date: 2022-12-25
 	@Override
-	public int Login(String userid, String userpw) throws Exception {
+	public String Login(String userid, String userpw) throws Exception {
 		return sqlSession.selectOne(nameSpace + ".Login");
 	}
 
@@ -55,6 +57,8 @@ public class UserDaoImpl implements UserDao {
 		return sqlSession.selectOne(nameSpace + ".CombackCheck");
 	}
 
+	//Desc: 컴백 회원가입
+	//Date: 2022-12-26
 	@Override
 	public void ComebackJoin(String userid, String userpw, String username, String birthday) throws Exception {
 		sqlSession.update(nameSpace + ".ComebackJoin");
@@ -65,6 +69,21 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public int IDCheck(String userid) throws Exception {
 		return sqlSession.selectOne(nameSpace + ".IDCheck");
+	}
+
+	//Desc: 회원정보 출력
+	//Date: 2022-12-26
+	@Override
+	public UserDto MyPage(String userid) throws Exception {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(nameSpace + ".MyPage");
+	}
+
+	//Desc: 회원정보 수정
+	//Date: 2022-12-26
+	@Override
+	public void UpdateUser(String username, String userpw, String birthday, String userid) throws Exception {
+		sqlSession.update(nameSpace + ".UpdateUser");
 	}
 
 }

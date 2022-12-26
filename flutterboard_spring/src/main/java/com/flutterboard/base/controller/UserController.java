@@ -61,4 +61,19 @@ public class UserController {
 		
 		return "result";
 	}
+	
+	// Desc: 회원정보 출력
+	// Date: 2022-12-26
+	@RequestMapping("/mypage")
+	public String MyPage(HttpServletRequest request, Model model) throws Exception{
+		service.MyPage(request, model);
+		return "result";
+	}
+	
+	//Desc: 회원정보 수정
+	//Date: 2022-12-26
+	@RequestMapping("/updateuser")
+	public void UpdateUser(HttpServletRequest request) throws Exception{
+		service.UpdateUser(request);
+	}
 }

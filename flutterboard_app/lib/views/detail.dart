@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BoardDetail extends StatefulWidget {
   final int boardid;
@@ -19,6 +20,7 @@ class _BoardDetailState extends State<BoardDetail> {
   late bool buttonvisible;
   late TextEditingController titleCont;
   late TextEditingController contentCont;
+  late bool editable;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _BoardDetailState extends State<BoardDetail> {
     setState(() {
       updatemode = false;
       buttonvisible = false;
+      editable=false;
     });
   }
 
@@ -94,20 +97,23 @@ class _BoardDetailState extends State<BoardDetail> {
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    const Text(
-                      '수정 모드',
-                    ),
-                    Switch(
-                      value: updatemode,
-                      onChanged: (value) {
-                        setState(() {
-                          updatemode = value;
-                        });
-                      },
-                    ),
-                  ],
+                Visibility(
+                  visible: editable,
+                  child: Row(
+                    children: [
+                      const Text(
+                        '수정 모드',
+                      ),
+                      Switch(
+                        value: updatemode,
+                        onChanged: (value) {
+                          setState(() {
+                            updatemode = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 Visibility(
                   visible: updatemode,
@@ -255,5 +261,16 @@ class _BoardDetailState extends State<BoardDetail> {
         );
       },
     );
+  }
+
+  //Desc: 본인이 쓴 글인지 확인
+  //Date: 2022-12-26
+  checkWriter() async{
+    final pref = await SharedPreferences.getInstance();
+    if(pref.getString('userid')==data[0]['writerid']){
+      setState(() {
+        editable=true;
+      });
+    }
   }
 }

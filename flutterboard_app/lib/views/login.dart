@@ -84,7 +84,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                   onPressed: () {
                     _loginTry(idCont.text.trim(), pwCont.text.trim(), context)
                         .whenComplete(() {
-                      if (data[0]['check'] == 1) {
+                      if (data[0]['check']!=null) {
                         _saveId();
                         _showSuccess(context);
                       } else {
@@ -211,7 +211,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
     );
   }
 
-  //Desc: 로그인 성공 시 뜨는 다이얼로그
+  //Desc: 로그인 실패 시 뜨는 다이얼로그
   //Date: 2022-12-23
   _showFail(BuildContext context) {
     showDialog(
@@ -245,5 +245,6 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
   _saveId() async {
     final pref = await SharedPreferences.getInstance();
     pref.setString('userid', idCont.text);
+    pref.setString('username',data[0]['check']);
   }
 }

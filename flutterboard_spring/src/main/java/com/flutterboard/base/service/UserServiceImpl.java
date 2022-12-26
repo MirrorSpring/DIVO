@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.flutterboard.base.dao.UserDao;
+import com.flutterboard.base.dto.UserDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 		String userid = request.getParameter("userid");
 		String userpw = request.getParameter("userpw");
 
-		int check = dao.Login(userid, userpw);
+		String check = dao.Login(userid, userpw);
 
 		JSONObject jsonList = new JSONObject();
 		JSONArray itemList = new JSONArray();
@@ -110,7 +111,7 @@ public class UserServiceImpl implements UserService {
 		String username = request.getParameter("username");
 		String birthday = request.getParameter("birthday");
 
-		int comeback = dao.ComebackCheck(userid); //삭제한 사용자가 다시 가입하려는지 확인
+		int comeback = dao.ComebackCheck(userid); // 삭제한 사용자가 다시 가입하려는지 확인
 
 		if (comeback == 0) {
 			dao.Join(userid, userpw, username, birthday);
@@ -121,19 +122,53 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void IDCheck(HttpServletRequest request, Model model) throws Exception {
-		String userid=request.getParameter("userid");
-		
+		String userid = request.getParameter("userid");
+
 		JSONObject jsonList = new JSONObject();
 		JSONArray itemList = new JSONArray();
-		
-		int check=dao.IDCheck(userid);
-		
+
+		int check = dao.IDCheck(userid);
+
 		JSONObject tempJson = new JSONObject();
 		tempJson.put("check", check);
 		itemList.add(tempJson);
 
 		jsonList.put("results", itemList);
 		model.addAttribute("ITEM", jsonList.toJSONString());
+	}
+
+	// Desc: 회원정보 출력
+	// Date: 2022-12-26
+	@Override
+	public void MyPage(HttpServletRequest request, Model model) throws Exception {
+		String userid = request.getParameter("userid");
+
+		JSONObject jsonList = new JSONObject();
+		JSONArray itemList = new JSONArray();
+
+		UserDto check = dao.MyPage(userid);
+
+		JSONObject tempJson = new JSONObject();
+		tempJson.put("userid", check.getUserid());
+		tempJson.put("username", check.getUsername());
+		tempJson.put("userpw", check.getUserpw());
+		tempJson.put("birthday", check.getBirthday());
+		itemList.add(tempJson);
+
+		jsonList.put("results", itemList);
+		model.addAttribute("ITEM", jsonList.toJSONString());
+	}
+
+	//Desc: 회원정보 수정
+	//Date: 2022-12-26
+	@Override
+	public void UpdateUser(HttpServletRequest request) throws Exception {
+		String userid=request.getParameter("userid");
+		String userpw=request.getParameter("userpw");
+		String username=request.getParameter("username");
+		String birthday=request.getParameter("birthday");
+		
+		dao.UpdateUser(username, userpw, birthday, userid);
 	}
 
 }

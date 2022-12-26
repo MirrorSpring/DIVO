@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:flutterboard_app/views/detail.dart';
+import 'package:flutterboard_app/views/mypage.dart';
 import 'package:flutterboard_app/views/write.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,12 +17,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late List data;
+  late var userid;
+  late var username;
 
   @override
   void initState() {
     super.initState();
     data = [];
     getJsonData();
+    userid = '';
+    username = '';
+    getUserinfo();
   }
 
   @override
@@ -42,6 +49,7 @@ class _HomeState extends State<Home> {
                 ),
               ).then((value) {
                 getJsonData();
+                getUserinfo();
               });
             },
             icon: const Icon(
@@ -49,6 +57,51 @@ class _HomeState extends State<Home> {
             ),
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                username,
+                style: const TextStyle(
+                  fontSize: 30,
+                ),
+              ),
+              accountEmail: Text(
+                '@$userid',
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.account_circle,
+                color: Colors.blue,
+              ),
+              title: const Text('마이페이지'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const MyPage();
+                  },
+                ),
+              ).then((value) {
+                getJsonData();
+              });
+              },
+            ),
+          ],
+        ),
       ),
       body: Center(
         child: data.isEmpty
@@ -90,7 +143,8 @@ class _HomeState extends State<Home> {
                                         ),
                                       ),
                                       Text(
-                                        (data[index]['updatedate'] ==data[index]['writedate'])
+                                        (data[index]['updatedate'] ==
+                                                data[index]['writedate'])
                                             ? ''
                                             : '  (수정됨)',
                                       ),
@@ -152,6 +206,15 @@ class _HomeState extends State<Home> {
       data.addAll(result);
     });
 
+    return true;
+  }
+
+  //Desc: Userid, username 가져오기
+  //Date: 2022-12-26
+  Future<bool> getUserinfo() async {
+    final pref = await SharedPreferences.getInstance();
+    userid = pref.getString('userid');
+    username = pref.getString('username');
     return true;
   }
 }
