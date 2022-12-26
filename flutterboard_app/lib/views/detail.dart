@@ -20,22 +20,22 @@ class _BoardDetailState extends State<BoardDetail> {
   late bool buttonvisible;
   late TextEditingController titleCont;
   late TextEditingController contentCont;
-  late bool editable;
+  late bool editable = false;
 
   @override
   void initState() {
     super.initState();
     titleCont = TextEditingController();
     contentCont = TextEditingController();
+    setState(() {
+      updatemode = false;
+      buttonvisible = false;
+    });
     data = [];
     getBoardDetail().whenComplete(() {
       titleCont.text = data.isEmpty ? "" : data[0]['title'];
       contentCont.text = data.isEmpty ? "" : data[0]['content'];
-    });
-    setState(() {
-      updatemode = false;
-      buttonvisible = false;
-      editable=false;
+      checkWriter();
     });
   }
 
@@ -265,12 +265,17 @@ class _BoardDetailState extends State<BoardDetail> {
 
   //Desc: 본인이 쓴 글인지 확인
   //Date: 2022-12-26
-  checkWriter() async{
+  checkWriter() async {
     final pref = await SharedPreferences.getInstance();
-    if(pref.getString('userid')==data[0]['writerid']){
+    if (pref.getString('userid') == data[0]['writerid']) {
       setState(() {
-        editable=true;
+        editable = true;
+      });
+    } else {
+      setState(() {
+        editable = false;
       });
     }
+    print(editable);
   }
 }
