@@ -16,11 +16,13 @@ class BoardDetail extends StatefulWidget {
 
 class _BoardDetailState extends State<BoardDetail> {
   late List data;
+  late List commentdata;
   late bool updatemode;
   late bool buttonvisible;
   late TextEditingController titleCont;
   late TextEditingController contentCont;
   late bool editable = false;
+  late String userid;
 
   @override
   void initState() {
@@ -32,11 +34,15 @@ class _BoardDetailState extends State<BoardDetail> {
       buttonvisible = false;
     });
     data = [];
+    commentdata = [];
+    getComment();
     getBoardDetail().whenComplete(() {
       titleCont.text = data.isEmpty ? "" : data[0]['title'];
       contentCont.text = data.isEmpty ? "" : data[0]['content'];
       checkWriter();
     });
+    userid = '';
+    getUser();
   }
 
   @override
@@ -140,6 +146,62 @@ class _BoardDetailState extends State<BoardDetail> {
                       ),
                     ],
                   ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: commentdata.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                '${commentdata[index]['username']}(@${commentdata[index]['c_userid']})',
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                commentdata[index]['commentcontent'],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                commentdata[index]['commentwritedate'],
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                            visible: commentdata[index]['c_userid'] == userid,
+                            child: Row(
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    //--
+                                  },
+                                  child: const Text(
+                                    '수정',
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    //--
+                                  },
+                                  child: const Text(
+                                    '삭제',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -276,6 +338,28 @@ class _BoardDetailState extends State<BoardDetail> {
         editable = false;
       });
     }
-    print(editable);
+  }
+
+  //Desc: 댓글 출력
+  //Date: 2022-12-25
+  Future<bool> getComment() async {
+    data.clear();
+    var url = Uri.parse(
+        'http://${Static.ipAddress}:8080/showcomment?boardid=${widget.boardid}');
+    var response = await http.get(url);
+    var dataConvertedJson = json.decode(utf8.decode(response.bodyBytes));
+    List result = dataConvertedJson['results'];
+
+    setState(() {
+      commentdata.addAll(result);
+    });
+    return true;
+  }
+
+  Future<bool> getUser() async {
+    final pref = await SharedPreferences.getInstance();
+    userid = pref.getString('userid')!;
+
+    return true;
   }
 }
