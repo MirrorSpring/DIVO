@@ -171,4 +171,13 @@ public class UserServiceImpl implements UserService {
 		dao.UpdateUser(username, userpw, birthday, userid);
 	}
 
+	//Desc: 회원탈퇴
+	//Date: 2022-12-26
+	@Override
+	public void DeleteUser(HttpServletRequest request) throws Exception {
+		String userid=request.getParameter("userid");
+		
+		dao.DeleteUser(userid);
+	}
+
 }

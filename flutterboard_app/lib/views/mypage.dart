@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
+import 'package:flutterboard_app/views/login.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,13 +34,13 @@ class _MyPageState extends State<MyPage> {
     birthdayCont = TextEditingController();
     idcheck = true;
     pwcheck = false;
-    data=[];
-    userid='';
+    data = [];
+    userid = '';
     getUserInfo().whenComplete(() {
-      idCont.text=data[0]['userid'];
-      pwCont.text=data[0]['userpw'];
-      nameCont.text=data[0]['username'];
-      birthdayCont.text=data[0]['birthday'];
+      idCont.text = data[0]['userid'];
+      pwCont.text = data[0]['userpw'];
+      nameCont.text = data[0]['username'];
+      birthdayCont.text = data[0]['birthday'];
     });
   }
 
@@ -164,7 +165,9 @@ class _MyPageState extends State<MyPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    //--
+                    deleteUser().whenComplete(() {
+                      _showDeleteConfirm();
+                    });
                   },
                   child: const Text(
                     '회원탈퇴',
@@ -180,12 +183,12 @@ class _MyPageState extends State<MyPage> {
 
   //Desc: 회원정보 출력
   //Date: 2022-12-26
-  Future<bool> getUserInfo() async{
+  Future<bool> getUserInfo() async {
     final pref = await SharedPreferences.getInstance();
     userid = pref.getString('userid');
     data.clear();
-    var url = Uri.parse(
-        'http://${Static.ipAddress}:8080/mypage?userid=$userid');
+    var url =
+        Uri.parse('http://${Static.ipAddress}:8080/mypage?userid=$userid');
     var response = await http.get(url);
     var dataConvertedJson = json.decode(utf8.decode(response.bodyBytes));
     List result = dataConvertedJson['results'];
@@ -228,6 +231,56 @@ class _MyPageState extends State<MyPage> {
                 Navigator.of(context).pop();
                 Navigator.pop(context);
                 FocusScope.of(context).unfocus();
+              },
+              child: const Text(
+                '확인',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //Desc: 회원탈퇴
+  //Date: 2022-12-26
+  Future<bool> deleteUser() async {
+    var url =
+        Uri.parse('http://${Static.ipAddress}:8080/deleteuser?userid=$userid');
+    await http.get(url).whenComplete(() {
+      _showUpdateConfirm();
+    });
+    return true;
+  }
+
+  //Desc: 회원탈퇴
+  //Date: 2022-12-26
+  _showDeleteConfirm() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '회원탈퇴',
+          ),
+          content: const Text(
+            '회원탈퇴가 완료되었습니다.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pop(context);
+                FocusScope.of(context).unfocus();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const Login();
+                    },
+                  ),
+                );
               },
               child: const Text(
                 '확인',

@@ -76,4 +76,11 @@ public class UserController {
 	public void UpdateUser(HttpServletRequest request) throws Exception{
 		service.UpdateUser(request);
 	}
+	
+	//Desc: 회원탈퇴
+	//Date: 2022-12-26
+	@RequestMapping("/deleteuser")
+	public void DeleteUser(HttpServletRequest request) throws Exception{
+		service.DeleteUser(request);
+	}
 }

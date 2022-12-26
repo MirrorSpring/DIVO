@@ -86,4 +86,11 @@ public class UserDaoImpl implements UserDao {
 		sqlSession.update(nameSpace + ".UpdateUser");
 	}
 
+	//Desc: 회원탈퇴
+	//Date: 2022-12-26
+	@Override
+	public void DeleteUser(String userid) throws Exception {
+		sqlSession.update(nameSpace + ".DeleteUser");
+	}
+
 }

@@ -25,5 +25,7 @@ public interface UserDao {
 	public UserDto MyPage(String userid) throws Exception;
 	
 	public void UpdateUser(String username, String userpw, String birthday, String userid) throws Exception;
+	
+	public void DeleteUser(String userid) throws Exception;
 
 }

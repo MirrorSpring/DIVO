@@ -25,5 +25,7 @@ public interface UserService {
 	public void MyPage(HttpServletRequest request, Model model) throws Exception;
 	
 	public void UpdateUser(HttpServletRequest request) throws Exception;
+	
+	public void DeleteUser(HttpServletRequest request) throws Exception;
 
 }
