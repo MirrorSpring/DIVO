@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:flutterboard_app/views/detail.dart';
+import 'package:flutterboard_app/views/login.dart';
 import 'package:flutterboard_app/views/mypage.dart';
 import 'package:flutterboard_app/views/write.dart';
 import 'package:http/http.dart' as http;
@@ -89,15 +90,36 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const MyPage();
-                  },
-                ),
-              ).then((value) {
-                getJsonData();
-              });
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const MyPage();
+                    },
+                  ),
+                ).then((value) {
+                  getJsonData();
+                });
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.lock,
+                color: Colors.blue,
+              ),
+              title: const Text('로그아웃'),
+              onTap: () {
+                logout().whenComplete(() {
+                  Navigator.of(context).pop();
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const Login();
+                      },
+                    ),
+                  );
+                });
               },
             ),
           ],
@@ -215,6 +237,14 @@ class _HomeState extends State<Home> {
     final pref = await SharedPreferences.getInstance();
     userid = pref.getString('userid');
     username = pref.getString('username');
+    return true;
+  }
+
+  //Desc: 로그아웃
+  //Date: 2022-12-26
+  Future<bool> logout() async {
+    final pref = await SharedPreferences.getInstance();
+    pref.clear();
     return true;
   }
 }
