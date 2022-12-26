@@ -21,6 +21,7 @@ class _BoardDetailState extends State<BoardDetail> {
   late bool buttonvisible;
   late TextEditingController titleCont;
   late TextEditingController contentCont;
+  late TextEditingController commentupdateCont;
   late bool editable = false;
   late String userid;
 
@@ -29,6 +30,7 @@ class _BoardDetailState extends State<BoardDetail> {
     super.initState();
     titleCont = TextEditingController();
     contentCont = TextEditingController();
+    commentupdateCont = TextEditingController();
     setState(() {
       updatemode = false;
       buttonvisible = false;
@@ -181,7 +183,7 @@ class _BoardDetailState extends State<BoardDetail> {
                               children: [
                                 TextButton(
                                   onPressed: () {
-                                    //--
+                                    _showCommentUpdate(context, index);
                                   },
                                   child: const Text(
                                     '수정',
@@ -189,7 +191,7 @@ class _BoardDetailState extends State<BoardDetail> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    //--
+                                    _showCommentDeleteConfirm(context, index);
                                   },
                                   child: const Text(
                                     '삭제',
@@ -343,7 +345,7 @@ class _BoardDetailState extends State<BoardDetail> {
   //Desc: 댓글 출력
   //Date: 2022-12-25
   Future<bool> getComment() async {
-    data.clear();
+    commentdata.clear();
     var url = Uri.parse(
         'http://${Static.ipAddress}:8080/showcomment?boardid=${widget.boardid}');
     var response = await http.get(url);
@@ -360,6 +362,108 @@ class _BoardDetailState extends State<BoardDetail> {
     final pref = await SharedPreferences.getInstance();
     userid = pref.getString('userid')!;
 
+    return true;
+  }
+
+  //Desc: 댓글 수정 화면 출력
+  //Date: 2022-12-26
+  _showCommentUpdate(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            '댓글 수정',
+          ),
+          content: TextField(
+            controller: commentupdateCont,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '취소',
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                updateComment(index).whenComplete(() {
+                  FocusScope.of(context).unfocus();
+                  Navigator.of(context).pop();
+                  setState(() {
+                    getComment();
+                  });
+                });
+              },
+              child: const Text(
+                '수정',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //Desc: 댓글 수정
+  //Date: 2022-12-26
+  Future<bool> updateComment(int index) async {
+    var url = Uri.parse(
+        'http://${Static.ipAddress}:8080/updatecomment?commentid=${commentdata[index]['commentid']}&commentcontent=${commentupdateCont.text.trim()}');
+    await http.get(url);
+    return true;
+  }
+
+  //Desc: 댓글 삭제 확인창 출력
+  //Date: 2022-12-26
+  _showCommentDeleteConfirm(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            '댓글 삭제',
+          ),
+          content: const Text(
+            '댓글을 삭제하시겠습니까?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '취소',
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                deleteComment(index).whenComplete(() {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    getComment();
+                  });
+                });
+              },
+              child: const Text(
+                '삭제',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //Desc: 댓글 삭제
+  //Date: 2022-12-26
+  Future<bool> deleteComment(int index) async {
+    var url = Uri.parse(
+        'http://${Static.ipAddress}:8080/deletecomment?commentid=${commentdata[index]['commentid']}');
+    await http.get(url);
     return true;
   }
 }

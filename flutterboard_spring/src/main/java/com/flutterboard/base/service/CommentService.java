@@ -9,5 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface CommentService {
 
 	public void ShowComment(HttpServletRequest request, Model model) throws Exception;
+	
+	public void UpdateComment(HttpServletRequest request) throws Exception;
+	
+	public void DeleteComment(HttpServletRequest request) throws Exception;
 
 }

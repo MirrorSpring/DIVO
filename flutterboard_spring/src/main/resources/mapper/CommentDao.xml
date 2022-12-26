@@ -12,4 +12,16 @@
 		from `user`, `comment`
 		where c_boardid=#{c_boardid} and `user`.userid=`comment`.c_userid and commentdeletedate is null;
 	</select>
+	
+	<!-- Desc: 댓글 수정 -->
+	<!-- Date: 2022-12-26 -->
+	<update id="UpdateComment">
+		update `comment` set commentcontent=#{commentcontent},commentupdatedate=now() where commentid=#{commentid};
+	</update>
+	
+	<!-- Desc: 댓글 삭제 -->
+	<!-- Date: 2022-12-26 -->
+	<update id="DeleteComment">
+		update `comment` set commentdeletedate=now() where commentid=#{commentid};
+	</update>
 </mapper>
