@@ -64,18 +64,27 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
         body: SingleChildScrollView(
           child: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(
-                  Icons.account_circle,
+                  Icons.account_circle_rounded,
+                  size: 200,
+                  color: Colors.blue,
                 ),
-                TextField(
-                  controller: idCont,
-                  decoration: const InputDecoration(labelText: "ID"),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: idCont,
+                    decoration: const InputDecoration(labelText: "ID"),
+                  ),
                 ),
-                TextField(
-                  controller: pwCont,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: "Password"),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: pwCont,
+                    obscureText: true,
+                    decoration: const InputDecoration(labelText: "Password"),
+                  ),
                 ),
                 const SizedBox(
                   height: 30,
@@ -84,7 +93,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                   onPressed: () {
                     _loginTry(idCont.text.trim(), pwCont.text.trim(), context)
                         .whenComplete(() {
-                      if (data[0]['check']!=null) {
+                      if (data[0]['check'] != null) {
                         _saveId();
                         _showSuccess(context);
                       } else {
@@ -96,7 +105,12 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                     '로그인',
                   ),
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const Text('회원정보를 잊으셨나요?'),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
                       onPressed: () {
@@ -111,6 +125,9 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                       },
                       child: const Text(
                         'ID 찾기',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                     TextButton(
@@ -126,11 +143,21 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                       },
                       child: const Text(
                         '비밀번호 찾기',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const Text(
+                  '처음 오셨나요?',
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
                       onPressed: () {
@@ -143,7 +170,12 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                           ),
                         );
                       },
-                      child: const Text('회원가입'),
+                      child: const Text(
+                        '회원가입',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
                   ],
                 )
@@ -245,6 +277,6 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
   _saveId() async {
     final pref = await SharedPreferences.getInstance();
     pref.setString('userid', idCont.text);
-    pref.setString('username',data[0]['check']);
+    pref.setString('username', data[0]['check']);
   }
 }

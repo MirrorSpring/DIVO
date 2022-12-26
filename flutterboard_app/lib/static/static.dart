@@ -11,4 +11,9 @@ class Static{
     final pref = await SharedPreferences.getInstance();
     pref.clear();
   }
+
+  //Desc: 정규식
+  //Date: 2022-12-26
+  static RegExp idReg=RegExp(r"^[0-9a-z]*$");
+  static RegExp birthdayReg=RegExp(r"^[0-9]{8}$");
 }
