@@ -5,6 +5,7 @@ import 'package:flutterboard_app/static/static.dart';
 import 'package:flutterboard_app/views/findid.dart';
 import 'package:flutterboard_app/views/findpw.dart';
 import 'package:flutterboard_app/views/home.dart';
+import 'package:flutterboard_app/views/join.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -126,6 +127,23 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                       child: const Text(
                         '비밀번호 찾기',
                       ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const JoinUser();
+                            },
+                          ),
+                        );
+                      },
+                      child: const Text('회원가입'),
                     ),
                   ],
                 )

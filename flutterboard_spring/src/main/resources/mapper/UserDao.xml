@@ -34,4 +34,29 @@
 	<update id="ResetPw">
 		update `user` set userpw=#{userpw}, updatedate=now() where userid=#{userid};
 	</update>
+	
+	<!-- Desc: 회원가입 -->
+	<!-- Date: 2022-12-26 -->
+	<insert id="Join">
+		insert into `user` (userid, userpw, username, birthday, initdate)
+		values (#{userid},#{userpw},#{username},#{birthday},now());
+	</insert>
+	
+	<!-- Desc: 컴백 체크 -->
+	<!-- Date: 2022-12-26 -->
+	<select id="ComebackCheck" resultType="int">
+		select count(*) from `user` where userid=#{userid};
+	</select>
+	
+	<!-- Desc: 컴백 회원가입 -->
+	<!-- Date: 2022-12-26 -->
+	<update id="ComebackJoin">
+		update `user` set userpw=#{userpw},username=#{username},birthday=#{birthday},deletedate=null where userid=#{userid};
+	</update>
+	
+	<!-- Desc: ID 중복체크 -->
+	<!-- Date: 2022-12-26 -->
+	<select id="IDCheck" resultType="int">
+		select count(*) from `user` where userid=#{userid} and deletedate is null;
+	</select>
 </mapper>

@@ -15,5 +15,11 @@ public interface UserService {
 	public void FindPw(HttpServletRequest request, Model model) throws Exception;
 	
 	public void ResetPw(HttpServletRequest request) throws Exception;
+	
+//	public void Join(HttpServletRequest request) throws Exception;
+	
+	public void Join(HttpServletRequest request) throws Exception;
+	
+	public void IDCheck(HttpServletRequest request, Model model) throws Exception;
 
 }

@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 		tempJson.put("check", check);
 		itemList.add(tempJson);
 		jsonList.put("results", itemList);
-		model.addAttribute("CHECK", jsonList.toJSONString());
+		model.addAttribute("ITEM", jsonList.toJSONString());
 	}
 
 	// Desc: ID 찾기
@@ -77,15 +77,63 @@ public class UserServiceImpl implements UserService {
 		model.addAttribute("ITEM", jsonList.toJSONString());
 	}
 
-	//Desc: 비밀번호 재설정
-	//Date: 2022-12-26
+	// Desc: 비밀번호 재설정
+	// Date: 2022-12-26
 	@Override
 	public void ResetPw(HttpServletRequest request) throws Exception {
 		// TODO Auto-generated method stub
-		String userpw=request.getParameter("userpw");
+		String userpw = request.getParameter("userpw");
+		String userid = request.getParameter("userid");
+
+		dao.ResetPw(userpw, userid);
+	}
+
+	// Desc: 회원가입
+	// Date: 2022-12-26
+	// Deprecated: 2022-12-26
+//	@Override
+//	public void Join(HttpServletRequest request) throws Exception {
+//		String userid = request.getParameter("userid");
+//		String userpw = request.getParameter("userpw");
+//		String username = request.getParameter("username");
+//		String birthday = request.getParameter("birthday");
+//
+//		dao.Join(userid, userpw, username, birthday);
+//	}
+
+	// Desc: 회원가입
+	// Date: 2022-12-26
+	@Override
+	public void Join(HttpServletRequest request) throws Exception {
+		String userid = request.getParameter("userid");
+		String userpw = request.getParameter("userpw");
+		String username = request.getParameter("username");
+		String birthday = request.getParameter("birthday");
+
+		int comeback = dao.ComebackCheck(userid); //삭제한 사용자가 다시 가입하려는지 확인
+
+		if (comeback == 0) {
+			dao.Join(userid, userpw, username, birthday);
+		} else {
+			dao.ComebackJoin(userid, userpw, username, birthday);
+		}
+	}
+
+	@Override
+	public void IDCheck(HttpServletRequest request, Model model) throws Exception {
 		String userid=request.getParameter("userid");
 		
-		dao.ResetPw(userpw, userid);
+		JSONObject jsonList = new JSONObject();
+		JSONArray itemList = new JSONArray();
+		
+		int check=dao.IDCheck(userid);
+		
+		JSONObject tempJson = new JSONObject();
+		tempJson.put("check", check);
+		itemList.add(tempJson);
+
+		jsonList.put("results", itemList);
+		model.addAttribute("ITEM", jsonList.toJSONString());
 	}
 
 }

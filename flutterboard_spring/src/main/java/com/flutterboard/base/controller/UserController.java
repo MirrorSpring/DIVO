@@ -42,7 +42,23 @@ public class UserController {
 	// Desc: 비밀번호 재설정
 	// Date: 2022-12-26
 	@RequestMapping("/resetpw")
-	public void resetpw(HttpServletRequest request) throws Exception{
+	public void resetpw(HttpServletRequest request) throws Exception {
 		service.ResetPw(request);
+	}
+
+	// Desc: 회원가입
+	// Date: 2022-12-26
+	@RequestMapping("/join")
+	public void Join(HttpServletRequest request) throws Exception{
+		service.Join(request);
+	}
+	
+	//Desc: ID 중복확인
+	//Date: 2022-12-26
+	@RequestMapping("/idcheck")
+	public String IDCheck(HttpServletRequest request, Model model) throws Exception{
+		service.IDCheck(request, model);
+		
+		return "result";
 	}
 }

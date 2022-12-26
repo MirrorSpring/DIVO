@@ -11,5 +11,13 @@ public interface UserDao {
 	public int FindPw(String username, String userid, String birthday) throws Exception;
 	
 	public void ResetPw(String userpw, String userid) throws Exception;
+	
+	public void Join(String userid, String userpw, String username, String birthday) throws Exception;
+	
+	public int ComebackCheck(String userid) throws Exception;
+	
+	public void ComebackJoin(String userid, String userpw, String username, String birthday) throws Exception;
+	
+	public int IDCheck(String userid) throws Exception;
 
 }

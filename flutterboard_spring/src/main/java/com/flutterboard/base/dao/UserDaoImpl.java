@@ -40,4 +40,31 @@ public class UserDaoImpl implements UserDao {
 		sqlSession.update(nameSpace + ".ResetPw");
 	}
 
+	//Desc: 회원가입
+	//Date: 2022-12-26
+	@Override
+	public void Join(String userid, String userpw, String username, String birthday) throws Exception {
+		sqlSession.insert(nameSpace + ".Join");
+	}
+
+	//Desc: 컴백 체크
+	//Date: 2022-12-26
+	@Override
+	public int ComebackCheck(String userid) throws Exception {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(nameSpace + ".CombackCheck");
+	}
+
+	@Override
+	public void ComebackJoin(String userid, String userpw, String username, String birthday) throws Exception {
+		sqlSession.update(nameSpace + ".ComebackJoin");
+	}
+
+	//Desc: ID 중복체크
+	//Date: 2022-12-26
+	@Override
+	public int IDCheck(String userid) throws Exception {
+		return sqlSession.selectOne(nameSpace + ".IDCheck");
+	}
+
 }
