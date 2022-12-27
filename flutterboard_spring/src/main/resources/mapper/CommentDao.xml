@@ -10,7 +10,8 @@
 	<select id="ShowComment" resultType="com.flutterboard.base.dto.CommentDto">
 		select commentid, c_userid, username, commentcontent, commentwritedate, commentupdatedate
 		from `user`, `comment`
-		where c_boardid=#{c_boardid} and `user`.userid=`comment`.c_userid and commentdeletedate is null;
+		where c_boardid=#{boardid} and `user`.userid=`comment`.c_userid and commentdeletedate is null
+		order by commentwritedate desc limit #{limit};
 	</select>
 	
 	<!-- Desc: 댓글 수정 -->

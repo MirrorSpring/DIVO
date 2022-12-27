@@ -6,7 +6,7 @@ import com.flutterboard.base.dto.CommentDto;
 
 public interface CommentDao {
 	
-	public List<CommentDto> ShowComment(int boardid) throws Exception;
+	public List<CommentDto> ShowComment(int boardid, int limit) throws Exception;
 	
 	public void UpdateComment(String commentcontent, int commentid) throws Exception;
 	

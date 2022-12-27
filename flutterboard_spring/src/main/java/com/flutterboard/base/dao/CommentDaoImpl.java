@@ -14,7 +14,7 @@ public class CommentDaoImpl implements CommentDao {
 	//Desc: 댓글 목록 보기
 	//Date: 2022-12-26
 	@Override
-	public List<CommentDto> ShowComment(int boardid) throws Exception {
+	public List<CommentDto> ShowComment(int boardid, int limit) throws Exception {
 		return sqlSession.selectList(nameSpace + ".ShowComment");
 	}
 

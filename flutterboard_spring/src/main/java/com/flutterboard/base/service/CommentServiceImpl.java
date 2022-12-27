@@ -24,8 +24,9 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public void ShowComment(HttpServletRequest request, Model model) throws Exception {
 		int boardid = Integer.parseInt(request.getParameter("boardid"));
+		int limit=Integer.parseInt(request.getParameter("limit"));
 
-		List<CommentDto> dtos = dao.ShowComment(boardid);
+		List<CommentDto> dtos = dao.ShowComment(boardid, limit*10);
 
 		JSONObject jsonList = new JSONObject();
 		JSONArray itemList = new JSONArray();

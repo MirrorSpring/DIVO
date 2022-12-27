@@ -14,7 +14,7 @@
 		from `user`, board
 		where userid=writerid and
 		board.deletedate is null and `user`.deletedate is null order by
-		writedate desc;
+		writedate desc limit #{limit};
 	</select>
 
 	<!-- Desc: 게시글 상세보기 출력 -->

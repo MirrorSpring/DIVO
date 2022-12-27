@@ -14,7 +14,7 @@ public class BoardDaoImpl implements BoardDao {
 	//Desc: 메인화면 출력
 	//Date: 2022-12-25
 	@Override
-	public List<BoardDto> ShowMain() throws Exception {
+	public List<BoardDto> ShowMain(int limit) throws Exception {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(nameSpace + ".ShowMain");
 	}

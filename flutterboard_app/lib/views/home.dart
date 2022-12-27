@@ -7,6 +7,7 @@ import 'package:flutterboard_app/views/login.dart';
 import 'package:flutterboard_app/views/mypage.dart';
 import 'package:flutterboard_app/views/write.dart';
 import 'package:http/http.dart' as http;
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -20,15 +21,19 @@ class _HomeState extends State<Home> {
   late List data;
   late var userid;
   late var username;
+  late RefreshController refreshCont;
+  late int limit;
 
   @override
   void initState() {
     super.initState();
     data = [];
+    limit = 1;
     getJsonData();
     userid = '';
     username = '';
     getUserinfo();
+    refreshCont = RefreshController(initialRefresh: false);
   }
 
   @override
@@ -49,6 +54,7 @@ class _HomeState extends State<Home> {
                   },
                 ),
               ).then((value) {
+                limit = 1;
                 getJsonData();
                 getUserinfo();
               });
@@ -86,7 +92,7 @@ class _HomeState extends State<Home> {
                 Icons.account_circle,
                 color: Colors.blue,
               ),
-              title: const Text('마이페이지'),
+              title: const Text('회원정보 수정'),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
@@ -97,6 +103,7 @@ class _HomeState extends State<Home> {
                     },
                   ),
                 ).then((value) {
+                  limit = 1;
                   getJsonData();
                 });
               },
@@ -126,102 +133,150 @@ class _HomeState extends State<Home> {
         ),
       ),
       body: Center(
-        child: data.isEmpty
-            ? const Text(
-                '글이 없습니다',
-              )
-            : ListView.builder(
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return BoardDetail(boardid: data[index]['boardid']);
-                          },
-                        ),
-                      ).then((value) {
-                        getJsonData();
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        child: Container(
-                          color: Colors.blue[50],
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        data[index]['title'],
-                                        style: const TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        (data[index]['updatedate'] ==
-                                                data[index]['writedate'])
-                                            ? ''
-                                            : '  (수정됨)',
-                                      ),
-                                      Text(
-                                        '     ${data[index]['writedate']}',
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w200),
-                                      ),
-                                    ],
+        child: SmartRefresher(
+          controller: refreshCont,
+          enablePullDown: true,
+          enablePullUp: true,
+          onLoading: () async {
+            await Future.delayed(const Duration(milliseconds: 1000));
+            limit += 1;
+            getJsonData().whenComplete(() {
+              refreshCont.loadComplete();
+            });
+          },
+          onRefresh: () async {
+            limit = 1;
+            await Future.delayed(const Duration(milliseconds: 1000));
+            getJsonData().whenComplete(() {
+              refreshCont.refreshCompleted();
+            });
+          },
+          header: CustomHeader(
+            builder: (context, mode) {
+              Widget body;
+              if (mode == RefreshStatus.idle) {
+                body = const Text('위로 올려 새로고침');
+              } else if (mode == RefreshStatus.refreshing) {
+                body = const CircularProgressIndicator();
+              } else {
+                body = const Text('새로고침 완료');
+              }
+              return SizedBox(
+                height: 55.0,
+                child: Center(child: body),
+              );
+            },
+          ),
+          child: data.isEmpty
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      '글이 없습니다.',
+                      style: TextStyle(
+                        fontSize: 40,
+                      ),
+                    ),
+                  ],
+                )
+              : ListView.builder(
+                  itemCount: data.length,
+                  //itemExtent: 5,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return BoardDetail(
+                                  boardid: data[index]['boardid']);
+                            },
+                          ),
+                        ).then((value) {
+                          getJsonData();
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          child: Container(
+                            color: Colors.blue[50],
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          data[index]['title'],
+                                          style: const TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          (data[index]['updatedate'] == null)
+                                              ? ''
+                                              : '  (수정됨)',
+                                        ),
+                                        Text(
+                                          (data[index]['updatedate'] == null)
+                                              ? '     ${data[index]['writedate']}'
+                                              : '     ${data[index]['updatedate']}',
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w200),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '${data[index]['writername']}(@${data[index]['writerid']})',
-                                        style: const TextStyle(
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          '${data[index]['writername']}(@${data[index]['writerid']})',
+                                          style: const TextStyle(
                                             fontSize: 15,
-                                            fontWeight: FontWeight.w200),
-                                      ),
-                                    ],
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                        child: RichText(
-                                            overflow: TextOverflow.ellipsis,
-                                            text: TextSpan(
-                                              text: '${data[index]['content']}',
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black,
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: RichText(
+                                              overflow: TextOverflow.ellipsis,
+                                              text: TextSpan(
+                                                text:
+                                                    '${data[index]['content']}',
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                            ),
-                                            maxLines: 2),
-                                      ),
-                                    ],
+                                              maxLines: 2),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                itemCount: data.length,
-              ),
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }
@@ -232,7 +287,7 @@ class _HomeState extends State<Home> {
   //Date: 2022-12-25
   Future<bool> getJsonData() async {
     data.clear();
-    var url = Uri.parse('http://${Static.ipAddress}:8080/main');
+    var url = Uri.parse('http://${Static.ipAddress}:8080/main?limit=$limit');
     var response = await http.get(url);
     var dataConvertedJson = json.decode(utf8.decode(response.bodyBytes));
     List result = dataConvertedJson['results'];

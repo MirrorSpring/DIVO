@@ -22,8 +22,9 @@ public class BoardServiceImpl implements BoardService {
 	//Desc: 메인화면 출력
 	//Date: 2022-12-25
 	@Override
-	public void ShowMain(Model model) throws Exception {
-		List<BoardDto> dtos=dao.ShowMain();
+	public void ShowMain(HttpServletRequest request, Model model) throws Exception {
+		int limit=Integer.parseInt(request.getParameter("limit"));
+		List<BoardDto> dtos=dao.ShowMain(limit*10);
 		
 	    JSONObject jsonList = new JSONObject();
 	    JSONArray itemList = new JSONArray();

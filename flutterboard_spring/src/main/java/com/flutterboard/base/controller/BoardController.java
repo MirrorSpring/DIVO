@@ -18,8 +18,8 @@ public class BoardController {
 	//Desc: 메인화면 출력
 	//Date: 2022-12-25
 	@RequestMapping("/main")
-	public String ShowMain(Model model) throws Exception{
-		service.ShowMain(model);
+	public String ShowMain(HttpServletRequest request, Model model) throws Exception{
+		service.ShowMain(request, model);
 		return "result";
 	}
 	

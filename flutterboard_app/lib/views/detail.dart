@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:http/http.dart' as http;
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BoardDetail extends StatefulWidget {
@@ -26,10 +26,14 @@ class _BoardDetailState extends State<BoardDetail> {
   late bool editable = false;
   late String? userid;
   late bool commentinserted;
+  late RefreshController refreshCont;
+  late int limit;
 
   @override
   void initState() {
     super.initState();
+    limit = 1;
+    refreshCont = RefreshController(initialRefresh: false);
     titleCont = TextEditingController();
     contentCont = TextEditingController();
     commentupdateCont = TextEditingController();
@@ -76,7 +80,7 @@ class _BoardDetailState extends State<BoardDetail> {
                       const Text(
                         '제목: ',
                         style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 25,
                         ),
                       ),
                       SizedBox(
@@ -96,7 +100,7 @@ class _BoardDetailState extends State<BoardDetail> {
                       Text(
                         '작성일자: ${data.isEmpty ? "" : data[0]['writedate']}',
                         style: const TextStyle(
-                          fontSize: 30,
+                          fontSize: 25,
                         ),
                       ),
                     ],
@@ -109,7 +113,7 @@ class _BoardDetailState extends State<BoardDetail> {
                       Text(
                         '내용',
                         style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 25,
                         ),
                       ),
                     ],
@@ -225,96 +229,144 @@ class _BoardDetailState extends State<BoardDetail> {
                   ),
                   SizedBox(
                     height: 500,
-                    child: commentdata.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: commentdata.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            '${commentdata[index]['username']}(@${commentdata[index]['c_userid']})',
-                                            style: const TextStyle(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w100,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              commentdata[index]
-                                                  ['commentcontent'],
+                    child: SmartRefresher(
+                      controller: refreshCont,
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      onLoading: () async {
+                        await Future.delayed(
+                            const Duration(milliseconds: 1000));
+                        limit += 1;
+                        getComment().whenComplete(() {
+                          refreshCont.loadComplete();
+                        });
+                      },
+                      onRefresh: () async {
+                        await Future.delayed(
+                            const Duration(milliseconds: 1000));
+                        refreshCont.refreshCompleted();
+                        limit = 1;
+                        getComment();
+                      },
+                      header: CustomHeader(
+                        builder: (context, mode) {
+                          Widget body;
+                          if (mode == RefreshStatus.idle) {
+                            body = const Text('위로 올려 새로고침');
+                          } else if (mode == RefreshStatus.refreshing) {
+                            body = const CircularProgressIndicator();
+                          } else {
+                            body = const Text('새로고침 완료');
+                          }
+                          return SizedBox(
+                            height: 55.0,
+                            child: Center(child: body),
+                          );
+                        },
+                      ),
+                      child: commentdata.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: commentdata.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${commentdata[index]['username']}(@${commentdata[index]['c_userid']})',
                                               style: const TextStyle(
                                                 fontSize: 20,
+                                                fontWeight: FontWeight.w100,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            commentdata[index]
-                                                ['commentwritedate'],
-                                          ),
-                                        ],
-                                      ),
-                                      Visibility(
-                                        visible: commentdata[index]
-                                                ['c_userid'] ==
-                                            userid,
-                                        child: Row(
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
                                           children: [
-                                            TextButton(
-                                              onPressed: () {
-                                                _showCommentUpdate(
-                                                    context, index);
-                                              },
-                                              child: const Text(
-                                                '수정',
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                _showCommentDeleteConfirm(
-                                                    context, index);
-                                              },
-                                              child: const Text(
-                                                '삭제',
-                                                style: TextStyle(
-                                                  color: Colors.red,
+                                            Expanded(
+                                              child: Text(
+                                                commentdata[index]
+                                                    ['commentcontent'],
+                                                style: const TextStyle(
+                                                  fontSize: 20,
                                                 ),
                                               ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              commentdata[index]
+                                                          ['updatedate'] ==
+                                                      null
+                                                  ? commentdata[index]
+                                                      ['commentwritedate']
+                                                  : commentdata[index]
+                                                      ['updatedate']!,
+                                            ),
+                                            Text(
+                                              commentdata[index]
+                                                          ['updatedate'] ==
+                                                      null
+                                                  ? ''
+                                                  : '     (수정됨)',
+                                            ),
+                                          ],
+                                        ),
+                                        Visibility(
+                                          visible: commentdata[index]
+                                                  ['c_userid'] ==
+                                              userid,
+                                          child: Row(
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  _showCommentUpdate(
+                                                      context, index);
+                                                },
+                                                child: const Text(
+                                                  '수정',
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _showCommentDeleteConfirm(
+                                                      context, index);
+                                                },
+                                                child: const Text(
+                                                  '삭제',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          )
-                        : const Text(
-                            '댓글이 없습니다.',
-                            style: TextStyle(
-                              fontSize: 30,
+                                );
+                              },
+                            )
+                          : const Text(
+                              '댓글이 없습니다.',
+                              style: TextStyle(
+                                fontSize: 30,
+                              ),
                             ),
-                          ),
+                    ),
                   ),
                 ],
               ),
@@ -572,7 +624,7 @@ class _BoardDetailState extends State<BoardDetail> {
   Future<bool> getComment() async {
     commentdata.clear();
     var url = Uri.parse(
-        'http://${Static.ipAddress}:8080/showcomment?boardid=${widget.boardid}');
+        'http://${Static.ipAddress}:8080/showcomment?boardid=${widget.boardid}&limit=$limit');
     var response = await http.get(url);
     var dataConvertedJson = json.decode(utf8.decode(response.bodyBytes));
     List result = dataConvertedJson['results'];
