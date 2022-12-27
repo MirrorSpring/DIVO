@@ -280,7 +280,32 @@ class _BoardDetailState extends State<BoardDetail> {
                                               '${commentdata[index]['username']}(@${commentdata[index]['c_userid']})',
                                               style: const TextStyle(
                                                 fontSize: 20,
-                                                fontWeight: FontWeight.w100,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              commentdata[index]
+                                                          ['updatedate'] ==
+                                                      null
+                                                  ? commentdata[index]
+                                                      ['commentwritedate']
+                                                  : commentdata[index]
+                                                      ['updatedate']!,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w200,
+                                              ),
+                                            ),
+                                            Text(
+                                              commentdata[index]
+                                                          ['updatedate'] ==
+                                                      null
+                                                  ? ''
+                                                  : ' (수정됨)',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w200,
                                               ),
                                             ),
                                           ],
@@ -296,6 +321,7 @@ class _BoardDetailState extends State<BoardDetail> {
                                                     ['commentcontent'],
                                                 style: const TextStyle(
                                                   fontSize: 20,
+                                                  fontWeight: FontWeight.w200,
                                                 ),
                                               ),
                                             ),
@@ -303,26 +329,6 @@ class _BoardDetailState extends State<BoardDetail> {
                                         ),
                                         const SizedBox(
                                           height: 10,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              commentdata[index]
-                                                          ['updatedate'] ==
-                                                      null
-                                                  ? commentdata[index]
-                                                      ['commentwritedate']
-                                                  : commentdata[index]
-                                                      ['updatedate']!,
-                                            ),
-                                            Text(
-                                              commentdata[index]
-                                                          ['updatedate'] ==
-                                                      null
-                                                  ? ''
-                                                  : '     (수정됨)',
-                                            ),
-                                          ],
                                         ),
                                         Visibility(
                                           visible: commentdata[index]

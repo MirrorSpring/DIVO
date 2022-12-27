@@ -40,9 +40,10 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
       case AppLifecycleState.resumed: //다시 돌아왔을 때
         break;
       case AppLifecycleState.inactive: //앱 비활성화(최소화 버튼 누르기), 꺼짐
-        Static.disposeSharedPreferences();
+
         break;
       case AppLifecycleState.paused:
+        Static.disposeSharedPreferences();
         break;
     }
     super.didChangeAppLifecycleState(state);
@@ -52,8 +53,8 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-          return await _confirmQuit(context);
-        },
+        return await _confirmQuit(context);
+      },
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -291,40 +292,40 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
 
   //Desc: 앱 종료 확인
   //Date: 2022-12-26
-  _confirmQuit(BuildContext context){
+  _confirmQuit(BuildContext context) {
     showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  '앱 종료',
-                ),
-                content: const Text(
-                  '앱을 종료하시겠습니까?',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      '취소',
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Static.disposeSharedPreferences();
-                      Navigator.of(context).pop();
-                      SystemNavigator.pop();
-                    },
-                    child: const Text(
-                      '확인',
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '앱 종료',
+          ),
+          content: const Text(
+            '앱을 종료하시겠습니까?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '취소',
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Static.disposeSharedPreferences();
+                Navigator.of(context).pop();
+                SystemNavigator.pop();
+              },
+              child: const Text(
+                '확인',
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

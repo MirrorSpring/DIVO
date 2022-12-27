@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flutterboard.base.dao.BoardDao">
+
+	<!-- Desc: 메인화면 출력 -->
+	<!-- Date: 2022-12-25 -->
+	<select id="ShowMain"
+		resultType="com.flutterboard.base.dto.BoardDto">
+		select boardid, writerid, username, title, writedate,
+		boardupdatedate, content
+		from `user`, board
+		where userid=writerid and
+		board.deletedate is null and `user`.deletedate is null order by
+		writedate desc limit #{limit};
+	</select>
+
+	<!-- Desc: 게시글 상세보기 출력 -->
+	<!-- Date: 2022-12-25 -->
+	<select id="BoardDetail"
+		resultType="com.flutterboard.base.dto.BoardDto">
+		select title, username, writerid, writedate, board.content,
+		boardupdatedate from board, `user` where boardid=#{boardid} and
+		writerid=userid;
+	</select>
+
+	<!-- Desc: 게시글 쓰기 -->
+	<!-- Date: 2022-12-25 -->
+	<insert id="Write">
+		insert into board (writerid, title, content,
+		writedate)
+		values (#{writerid}, #{title}, #{content}, now());
+	</insert>
+
+	<!-- Desc: 게시글 수정 -->
+	<!-- Date: 2022-12-25 -->
+	<update id="UpdateBoard">
+		update board set title=#{title}, content=#{content}, boardupdatedate=now()
+		where boardid=#{boardid};
+	</update>
+	
+	<!-- Desc: 게시글 삭제 -->
+	<!-- Date: 2022-12-25 -->
+	<update id="DeleteBoard">
+		update board set deletedate=now() where boardid=#{boardid};
+	</update>
+</mapper>

@@ -125,7 +125,7 @@ class _JoinUserState extends State<JoinUser> {
                             onChanged: (value) {
                               idCheck(value);
                               if (Static.idReg.hasMatch(value.trim()) &&
-                                  value.trim().length < 15) {
+                                  value.trim().length <= 13) {
                                 setState(() {
                                   correctid = true;
                                 });
@@ -142,7 +142,7 @@ class _JoinUserState extends State<JoinUser> {
                                           ? '중복된 ID입니다'
                                           : '사용 가능한 ID입니다.'
                                       : '사용 불가능한 ID입니다.'
-                                  : '알파벳 소문자와 숫자를 조합하여 15자 이내',
+                                  : '알파벳 소문자와 숫자를 조합하여 13자 이내',
                               labelStyle: const TextStyle(
                                 fontSize: 12,
                               ),

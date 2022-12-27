@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flutterboard.base.dao.CommentDao">
+
+	<!-- Desc: 댓글 목록 출력 -->
+	<!-- Date: 2022-12-26 -->
+	<select id="ShowComment" resultType="com.flutterboard.base.dto.CommentDto">
+		select commentid, c_userid, username, commentcontent, commentwritedate, commentupdatedate
+		from `user`, `comment`
+		where c_boardid=#{boardid} and `user`.userid=`comment`.c_userid and commentdeletedate is null
+		order by commentwritedate desc limit #{limit};
+	</select>
+	
+	<!-- Desc: 댓글 수정 -->
+	<!-- Date: 2022-12-26 -->
+	<update id="UpdateComment">
+		update `comment` set commentcontent=#{commentcontent},commentupdatedate=now() where commentid=#{commentid};
+	</update>
+	
+	<!-- Desc: 댓글 삭제 -->
+	<!-- Date: 2022-12-26 -->
+	<update id="DeleteComment">
+		update `comment` set commentdeletedate=now() where commentid=#{commentid};
+	</update>
+	
+	<!-- Desc: 댓글 쓰기 -->
+	<!-- Date: 2022-12-26 -->
+	<insert id="Comment">
+		insert into `comment` (c_boardid, c_userid, commentcontent, commentwritedate)
+		values (#{boardid}, #{userid}, #{commentcontent}, now());
+	</insert>
+	
+</mapper>

@@ -223,25 +223,21 @@ class _HomeState extends State<Home> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Text(
-                                            data[index]['title'],
-                                            style: const TextStyle(
-                                                fontSize: 30,
-                                                fontWeight: FontWeight.w500),
+                                          SizedBox(
+                                            width: 220,
+                                            child: RichText(
+                                              overflow: TextOverflow.ellipsis,
+                                              text: TextSpan(
+                                                text: data[index]['title'],
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                          Text(
-                                            (data[index]['updatedate'] == null)
-                                                ? ''
-                                                : '  (수정됨)',
-                                          ),
-                                          Text(
-                                            (data[index]['updatedate'] == null)
-                                                ? '     ${data[index]['writedate']}'
-                                                : '     ${data[index]['updatedate']}',
-                                            style: const TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w200),
-                                          ),
+                                          
                                         ],
                                       ),
                                     ),
@@ -273,12 +269,30 @@ class _HomeState extends State<Home> {
                                                   style: const TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black,
+                                                    fontWeight: FontWeight.w300,
                                                   ),
                                                 ),
                                                 maxLines: 2),
                                           ),
                                         ],
                                       ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          (data[index]['updatedate'] == null)
+                                              ? '     ${data[index]['writedate']}'
+                                              : '     ${data[index]['updatedate']}',
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w200),
+                                        ),
+                                        Text(
+                                            (data[index]['updatedate'] == null)
+                                                ? ''
+                                                : '  (수정됨)',
+                                          ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -332,39 +346,39 @@ class _HomeState extends State<Home> {
 
   //Desc: 앱 종료 확인
   //Date: 2022-12-26
-  _confirmQuit(BuildContext context){
+  _confirmQuit(BuildContext context) {
     showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  '앱 종료',
-                ),
-                content: const Text(
-                  '앱을 종료하시겠습니까?',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      '취소',
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Static.disposeSharedPreferences();
-                      SystemNavigator.pop();
-                    },
-                    child: const Text(
-                      '확인',
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '앱 종료',
+          ),
+          content: const Text(
+            '앱을 종료하시겠습니까?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '취소',
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Static.disposeSharedPreferences();
+                SystemNavigator.pop();
+              },
+              child: const Text(
+                '확인',
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
