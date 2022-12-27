@@ -11,6 +11,20 @@ public class BoardDto {
 	String writedate;
 	String boardupdatedate;
 	String content;
+	
+	//Desc: 메인화면
+	//Date: 2022-12-27
+	public BoardDto(int boardid, String writerid, String username, String title, String writedate,
+			String boardupdatedate, String content) {
+		super();
+		this.boardid = boardid;
+		this.writerid = writerid;
+		this.username = username;
+		this.title = title;
+		this.writedate = writedate;
+		this.boardupdatedate = boardupdatedate;
+		this.content = content;
+	}
 
 	public BoardDto(String writerid, String username, String title, String writedate, String boardupdatedate,
 			String content) {
@@ -21,16 +35,6 @@ public class BoardDto {
 		this.writedate = writedate;
 		this.boardupdatedate = boardupdatedate;
 		this.content = content;
-	}
-
-	public BoardDto(int boardid, String writerid, String username, String title, String writedate, String boardupdatedate) {
-		super();
-		this.boardid = boardid;
-		this.writerid = writerid;
-		this.username = username;
-		this.title = title;
-		this.writedate = writedate;
-		this.boardupdatedate = boardupdatedate;
 	}
 
 	public String getContent() {

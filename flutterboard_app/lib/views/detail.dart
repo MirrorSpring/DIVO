@@ -25,6 +25,7 @@ class _BoardDetailState extends State<BoardDetail> {
   late TextEditingController commentCont;
   late bool editable = false;
   late String? userid;
+  late bool commentinserted;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _BoardDetailState extends State<BoardDetail> {
     });
     userid = '';
     getUser();
+    commentinserted = false;
   }
 
   @override
@@ -65,149 +67,257 @@ class _BoardDetailState extends State<BoardDetail> {
         ),
         body: SingleChildScrollView(
           child: Center(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      '제목: ',
-                    ),
-                    SizedBox(
-                      width: 300,
-                      child: TextField(
-                        controller: titleCont,
-                        readOnly: !updatemode,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '작성일자: ${data.isEmpty ? "" : data[0]['writedate']}',
-                    ),
-                  ],
-                ),
-                Row(
-                  children: const [
-                    Text(
-                      '내용',
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 300,
-                      height: 300,
-                      child: CupertinoTextField(
-                        controller: contentCont,
-                        readOnly: !updatemode,
-                      ),
-                    ),
-                  ],
-                ),
-                Visibility(
-                  visible: editable,
-                  child: Row(
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                children: [
+                  Row(
                     children: [
                       const Text(
-                        '수정 모드',
+                        '제목: ',
+                        style: TextStyle(
+                          fontSize: 30,
+                        ),
                       ),
-                      Switch(
-                        value: updatemode,
-                        onChanged: (value) {
-                          setState(() {
-                            updatemode = value;
-                          });
-                        },
+                      SizedBox(
+                        width: 270,
+                        child: TextField(
+                          controller: titleCont,
+                          readOnly: !updatemode,
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Visibility(
-                  visible: updatemode,
-                  child: Row(
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          updateBoard();
-                        },
-                        child: const Text(
-                          '수정',
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          _showDeleteConfirm(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                        ),
-                        child: const Text(
-                          '삭제',
+                      Text(
+                        '작성일자: ${data.isEmpty ? "" : data[0]['writedate']}',
+                        style: const TextStyle(
+                          fontSize: 30,
                         ),
                       ),
                     ],
                   ),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: commentdata.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                '${commentdata[index]['username']}(@${commentdata[index]['c_userid']})',
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: const [
+                      Text(
+                        '내용',
+                        style: TextStyle(
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 350,
+                        height: 300,
+                        child: TextField(
+                          readOnly: !updatemode,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 15,
+                          maxLines: null,
+                          controller: contentCont,
+                          decoration: const InputDecoration(
+                            hintText: "매너있는 게시글을 작성해 주세요",
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.blue,
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                commentdata[index]['commentcontent'],
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                commentdata[index]['commentwritedate'],
-                              ),
-                            ],
-                          ),
-                          Visibility(
-                            visible: commentdata[index]['c_userid'] == userid,
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    _showCommentUpdate(context, index);
-                                  },
-                                  child: const Text(
-                                    '수정',
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    _showCommentDeleteConfirm(context, index);
-                                  },
-                                  child: const Text(
-                                    '삭제',
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    );
-                  },
-                ),
-              ],
+                    ],
+                  ),
+                  Visibility(
+                    visible: editable && !updatemode,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              updatemode = true;
+                            });
+                          },
+                          child: const Text(
+                            '수정',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: updatemode,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                updatemode = false;
+                              });
+                            },
+                            child: const Text(
+                              '취소',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              updateBoard();
+                            },
+                            child: const Text(
+                              '수정',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showDeleteConfirm(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            child: const Text(
+                              '삭제',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    thickness: 2,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                    child: Row(
+                      children: const [
+                        Text(
+                          '댓글',
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 500,
+                    child: commentdata.isNotEmpty
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: commentdata.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${commentdata[index]['username']}(@${commentdata[index]['c_userid']})',
+                                            style: const TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w100,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              commentdata[index]
+                                                  ['commentcontent'],
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            commentdata[index]
+                                                ['commentwritedate'],
+                                          ),
+                                        ],
+                                      ),
+                                      Visibility(
+                                        visible: commentdata[index]
+                                                ['c_userid'] ==
+                                            userid,
+                                        child: Row(
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                _showCommentUpdate(
+                                                    context, index);
+                                              },
+                                              child: const Text(
+                                                '수정',
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                _showCommentDeleteConfirm(
+                                                    context, index);
+                                              },
+                                              child: const Text(
+                                                '삭제',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : const Text(
+                            '댓글이 없습니다.',
+                            style: TextStyle(
+                              fontSize: 30,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -223,26 +333,67 @@ class _BoardDetailState extends State<BoardDetail> {
                         bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 300,
-                              child: TextField(
-                                controller: commentCont,
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              const Text(
+                                '댓글 쓰기',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            writeComment().whenComplete(() {
-                              Navigator.of(context).pop();
-                              _showWriteResult();
-                              commentCont.text="";
-                            });
-                          },
-                          child: const Text(
-                            '댓글 쓰기',
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 290,
+                                    child: TextField(
+                                        controller: commentCont,
+                                        textInputAction: TextInputAction.go,
+                                        onChanged: (value) {
+                                          if (commentCont.text.trim().isEmpty) {
+                                            setState(() {
+                                              commentinserted = false;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              commentinserted = true;
+                                            });
+                                          }
+                                        },
+                                        decoration: const InputDecoration(
+                                            hintText: "건전한 댓글을 입력해 주세요."),
+                                        onSubmitted: (value) {
+                                          if (value.trim().isNotEmpty) {
+                                            writeComment().whenComplete(() {
+                                              Navigator.of(context).pop();
+                                              _showWriteResult();
+                                              commentCont.text = "";
+                                            });
+                                          }
+                                        }),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if (commentCont.text.isNotEmpty) {
+                                          writeComment().whenComplete(() {
+                                            Navigator.of(context).pop();
+                                            _showWriteResult();
+                                            commentCont.text = "";
+                                          });
+                                        }
+                                      },
+                                      child: const Text(
+                                        '댓글 쓰기',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -253,7 +404,7 @@ class _BoardDetailState extends State<BoardDetail> {
             );
           },
           child: const Icon(
-            Icons.create,
+            Icons.comment,
           ),
         ),
       ),
@@ -361,7 +512,34 @@ class _BoardDetailState extends State<BoardDetail> {
               onPressed: () {
                 deleteBoard().whenComplete(() {
                   Navigator.of(context).pop();
-                  Navigator.pop(context);
+
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text(
+                          '게시글 삭제',
+                        ),
+                        content: const Text(
+                          '게시글이 삭제되었습니다.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              getBoardDetail();
+                              FocusScope.of(context).unfocus();
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              '확인',
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 });
               },
               child: const Text(
@@ -415,6 +593,7 @@ class _BoardDetailState extends State<BoardDetail> {
   //Desc: 댓글 수정 화면 출력
   //Date: 2022-12-26
   _showCommentUpdate(BuildContext context, int index) {
+    commentupdateCont.text = commentdata[index]['commentcontent'];
     showDialog(
       context: context,
       builder: (context) {
@@ -443,6 +622,33 @@ class _BoardDetailState extends State<BoardDetail> {
                   setState(() {
                     getComment();
                   });
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text(
+                          '댓글 수정',
+                        ),
+                        content: const Text(
+                          '댓글이 수정되었습니다.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              getBoardDetail();
+                              getComment();
+                              FocusScope.of(context).unfocus();
+                            },
+                            child: const Text(
+                              '확인',
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 });
               },
               child: const Text(
@@ -493,6 +699,33 @@ class _BoardDetailState extends State<BoardDetail> {
                   setState(() {
                     getComment();
                   });
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text(
+                          '댓글 삭제',
+                        ),
+                        content: const Text(
+                          '댓글이 삭제되었습니다.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              getBoardDetail();
+                              getComment();
+                              FocusScope.of(context).unfocus();
+                            },
+                            child: const Text(
+                              '확인',
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 });
               },
               child: const Text(
@@ -525,7 +758,7 @@ class _BoardDetailState extends State<BoardDetail> {
 
   //Desc: 댓글 쓰기 결과 확인
   //Date: 2022-12-27
-  _showWriteResult(){
+  _showWriteResult() {
     showDialog(
       context: context,
       barrierDismissible: false,

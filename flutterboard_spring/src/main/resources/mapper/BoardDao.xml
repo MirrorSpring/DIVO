@@ -10,7 +10,7 @@
 	<select id="ShowMain"
 		resultType="com.flutterboard.base.dto.BoardDto">
 		select boardid, writerid, username, title, writedate,
-		boardupdatedate
+		boardupdatedate, content
 		from `user`, board
 		where userid=writerid and
 		board.deletedate is null and `user`.deletedate is null order by

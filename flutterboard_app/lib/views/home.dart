@@ -128,7 +128,7 @@ class _HomeState extends State<Home> {
       body: Center(
         child: data.isEmpty
             ? const Text(
-                '데이터가 없습니다',
+                '글이 없습니다',
               )
             : ListView.builder(
                 itemBuilder: (context, index) {
@@ -159,10 +159,10 @@ class _HomeState extends State<Home> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        '제목: ${data[index]['title']}',
+                                        data[index]['title'],
                                         style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w500),
                                       ),
                                       Text(
                                         (data[index]['updatedate'] ==
@@ -170,18 +170,25 @@ class _HomeState extends State<Home> {
                                             ? ''
                                             : '  (수정됨)',
                                       ),
+                                      Text(
+                                        '     ${data[index]['writedate']}',
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w200),
+                                      ),
                                     ],
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                   child: Row(
                                     children: [
                                       Text(
-                                        '작성자: ${data[index]['writername']}(@${data[index]['writerid']})',
+                                        '${data[index]['writername']}(@${data[index]['writerid']})',
                                         style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w200),
                                       ),
                                     ],
                                   ),
@@ -190,11 +197,17 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
                                     children: [
-                                      Text(
-                                        '작성일자: ${data[index]['writedate']}',
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
+                                      Flexible(
+                                        child: RichText(
+                                            overflow: TextOverflow.ellipsis,
+                                            text: TextSpan(
+                                              text: '${data[index]['content']}',
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            maxLines: 2),
                                       ),
                                     ],
                                   ),

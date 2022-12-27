@@ -35,56 +35,95 @@ class _WriteState extends State<Write> {
           ),
         ),
         body: Center(
-          child: Column(
-            children: [
-              Row(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
                 children: [
-                  const Text(
-                    '제목: ',
+                  Row(
+                    children: [
+                      const Text(
+                        '제목:   ',
+                        style: TextStyle(
+                          fontSize: 25,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 270,
+                        child: TextField(
+                          controller: titleCont,
+                          decoration: const InputDecoration(
+                              labelText: "제목을 입력하세요",
+                            ),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    width: 300,
-                    child: TextField(
-                      controller: titleCont,
-                    ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    children: const [
+                      Text(
+                        '내용',
+                        style: TextStyle(
+                          fontSize: 25,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 350,
+                        height: 300,
+                        child: TextField(
+                          keyboardType: TextInputType.multiline,
+                          minLines: 15,
+                          maxLines: null,
+                          controller: contentCont,
+                          decoration: const InputDecoration(
+                            hintText: "매너있는 게시글을 작성해 주세요",
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.blue,
+                              )
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: titleCont.text.trim().isNotEmpty &&
+                                contentCont.text.trim().isNotEmpty
+                            ? () {
+                                write().whenComplete(
+                                  () {
+                                    _showDialog();
+                                  },
+                                );
+                              }
+                            : null,
+                        child: const Text(
+                          '글쓰기',
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              Row(
-                children: const [
-                  Text(
-                    '내용',
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 300,
-                    height: 300,
-                    child: CupertinoTextField(
-                      controller: contentCont,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      write().whenComplete(
-                        () {
-                          _showDialog();
-                        },
-                      );
-                    },
-                    child: const Text(
-                      '글쓰기',
-                    ),
-                  ),
-                ],
-              )
-            ],
+            ),
           ),
         ),
       ),

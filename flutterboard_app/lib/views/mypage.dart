@@ -21,6 +21,8 @@ class _MyPageState extends State<MyPage> {
   late TextEditingController birthdayCont;
   late bool idcheck;
   late bool pwcheck;
+  late bool correctbday;
+  late bool correctpw;
   late List data;
   var userid;
 
@@ -42,6 +44,8 @@ class _MyPageState extends State<MyPage> {
       nameCont.text = data[0]['username'];
       birthdayCont.text = data[0]['birthday'];
     });
+    correctbday = true;
+    correctpw = true;
   }
 
   @override
@@ -52,130 +56,229 @@ class _MyPageState extends State<MyPage> {
           '마이페이지',
         ),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Row(
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
               children: [
-                const Text(
-                  'ID: ',
+                const SizedBox(
+                  height: 50,
                 ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: idCont,
-                    readOnly: true,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  '비밀번호: ',
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: pwCont,
-                    obscureText: true,
-                    onChanged: (value) {
-                      if (pwCont.text.trim() == pwCheckCont.text.trim()) {
-                        setState(() {
-                          pwcheck = true;
-                        });
-                      } else {
-                        setState(() {
-                          pwcheck = false;
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  '비밀번호 확인: ',
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: pwCheckCont,
-                    obscureText: true,
-                    onChanged: (value) {
-                      if (pwCont.text.trim() == pwCheckCont.text.trim()) {
-                        setState(() {
-                          pwcheck = true;
-                        });
-                      } else {
-                        setState(() {
-                          pwcheck = false;
-                        });
-                      }
-                    },
-                    decoration: InputDecoration(
-                      labelText: idCont.text.trim().isNotEmpty
-                          ? pwcheck
-                              ? '비밀번호가 일치합니다.'
-                              : '비밀번호가 일치하지 않습니다.'
-                          : '비밀번호를 다시 한 번 입력하세요',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        SizedBox(
+                          height: 35,
+                        ),
+                        SizedBox(
+                          height: 70,
+                          child: Text(
+                            'ID:   ',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          child: Text(
+                            '비밀번호:   ',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          child: Text(
+                            '비밀번호 확인:   ',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          child: Text(
+                            '이름:   ',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          child: Text(
+                            '생년월일:   ',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    //---------------------------------------
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 200,
+                          height: 70,
+                          child: TextField(
+                            controller: idCont,
+                            readOnly: true,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 200,
+                          height: 70,
+                          child: TextField(
+                            controller: pwCont,
+                            decoration: InputDecoration(
+                              labelText: pwCont.text.trim().isNotEmpty
+                                  ? correctpw
+                                      ? '사용 가능한 비밀번호입니다.'
+                                      : '사용 불가능한 비밀번호입니다.'
+                                  : '알파벳 소문자와 숫자를 조합하여 15자 이내',
+                              labelStyle: const TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                            obscureText: true,
+                            onChanged: (value) {
+                              if (value.trim() == pwCheckCont.text.trim()) {
+                                setState(() {
+                                  pwcheck = true;
+                                });
+                              } else {
+                                setState(() {
+                                  pwcheck = false;
+                                });
+                              }
+                              if (Static.idReg.hasMatch(value.trim()) &&
+                                  value.length < 15) {
+                                setState(() {
+                                  correctpw = true;
+                                });
+                              } else {
+                                setState(() {
+                                  correctpw = false;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 200,
+                          height: 70,
+                          child: TextField(
+                            controller: pwCheckCont,
+                            obscureText: true,
+                            onChanged: (value) {
+                              if (pwCont.text.trim() ==
+                                  pwCheckCont.text.trim()) {
+                                setState(() {
+                                  pwcheck = true;
+                                });
+                              } else {
+                                setState(() {
+                                  pwcheck = false;
+                                });
+                              }
+                            },
+                            decoration: InputDecoration(
+                              labelText: pwCont.text.trim().isNotEmpty
+                                  ? pwcheck
+                                      ? '비밀번호가 일치합니다.'
+                                      : '비밀번호가 일치하지 않습니다.'
+                                  : '비밀번호를 다시 한 번 입력하세요',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 200,
+                          height: 70,
+                          child: TextField(
+                            controller: nameCont,
+                            decoration:
+                                const InputDecoration(labelText: '이름을 입력하세요'),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 200,
+                          height: 70,
+                          child: TextField(
+                            controller: birthdayCont,
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              if (Static.birthdayReg.hasMatch(value.trim())) {
+                                setState(() {
+                                  correctbday = true;
+                                });
+                              } else {
+                                setState(() {
+                                  correctbday = false;
+                                });
+                              }
+                            },
+                            decoration: InputDecoration(
+                              labelText: birthdayCont.text.trim().isNotEmpty
+                                  ? correctbday
+                                      ? ''
+                                      : '생년월일을 정확히 입력해 주세요.'
+                                  : '숫자 8자리(ex: 19000101)',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                      child: ElevatedButton(
+                        onPressed: correctbday &&
+                                nameCont.text.trim().isNotEmpty &&
+                                pwcheck
+                            ? () {
+                                updateUser().whenComplete(() {
+                                  FocusScope.of(context).unfocus();
+                                  _showUpdateConfirm();
+                                });
+                              }
+                            : null,
+                        child: const Text(
+                          '회원정보 수정',
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red),
+                        onPressed: () {
+                          _showDeleteConfirm();
+                        },
+                        child: const Text(
+                          '회원탈퇴',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            Row(
-              children: [
-                const Text(
-                  '이름: ',
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: nameCont,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  '생년월일: ',
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: birthdayCont,
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    updateUser();
-                  },
-                  child: const Text(
-                    '회원정보 수정',
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    deleteUser().whenComplete(() {
-                      _showDeleteConfirm();
-                    });
-                  },
-                  child: const Text(
-                    '회원탈퇴',
-                  ),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -242,6 +345,47 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
+  //Desc: 회원탈퇴 확인
+  //Date: 2022-12-26
+  _showDeleteConfirm() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '회원탈퇴',
+          ),
+          content: const Text(
+            '탈퇴하시겠습니까?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                '취소',
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                deleteUser().whenComplete(() {
+                  FocusScope.of(context).unfocus();
+                  Navigator.of(context).pop();
+                  _showDeleteResult();
+                });
+              },
+              child: const Text(
+                '확인',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   //Desc: 회원탈퇴
   //Date: 2022-12-26
   Future<bool> deleteUser() async {
@@ -253,9 +397,9 @@ class _MyPageState extends State<MyPage> {
     return true;
   }
 
-  //Desc: 회원탈퇴
+  //Desc: 회원탈퇴 결과 출력
   //Date: 2022-12-26
-  _showDeleteConfirm() {
+  _showDeleteResult() {
     showDialog(
       context: context,
       barrierDismissible: false,

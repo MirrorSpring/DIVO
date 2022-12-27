@@ -164,6 +164,7 @@ class _FindIdState extends State<FindId> {
           ),
           content: data.isNotEmpty
               ? Column(
+                mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text(
                       '회원님의 ID 목록입니다',

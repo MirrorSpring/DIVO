@@ -36,6 +36,7 @@ public class BoardServiceImpl implements BoardService {
             tempJson.put("title", dtos.get(i).getTitle());
             tempJson.put("writedate", dtos.get(i).getWritedate());
             tempJson.put("updatedate", dtos.get(i).getBoardupdatedate());
+            tempJson.put("content", dtos.get(i).getContent());
             itemList.add(tempJson);
 	    }
 		
