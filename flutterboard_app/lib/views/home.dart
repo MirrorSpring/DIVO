@@ -171,6 +171,14 @@ class _HomeState extends State<Home> {
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.warning_rounded,
+                        color: Colors.red,
+                        size: 70,
+                      ),
+                    ),
                     Text(
                       '글이 없습니다.',
                       style: TextStyle(

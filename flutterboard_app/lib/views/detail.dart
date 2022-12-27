@@ -360,11 +360,16 @@ class _BoardDetailState extends State<BoardDetail> {
                                 );
                               },
                             )
-                          : const Text(
-                              '댓글이 없습니다.',
-                              style: TextStyle(
-                                fontSize: 30,
-                              ),
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  '댓글이 없습니다.',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                  ),
+                                ),
+                              ],
                             ),
                     ),
                   ),
