@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:flutterboard_app/views/detail.dart';
 import 'package:flutterboard_app/views/login.dart';
@@ -132,158 +133,163 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      body: Center(
-        child: SmartRefresher(
-          controller: refreshCont,
-          enablePullDown: true,
-          enablePullUp: true,
-          onLoading: () async {
-            await Future.delayed(const Duration(milliseconds: 1000));
-            limit += 1;
-            getJsonData().whenComplete(() {
-              refreshCont.loadComplete();
-            });
-          },
-          onRefresh: () async {
-            limit = 1;
-            await Future.delayed(const Duration(milliseconds: 1000));
-            getJsonData().whenComplete(() {
-              refreshCont.refreshCompleted();
-            });
-          },
-          header: CustomHeader(
-            builder: (context, mode) {
-              Widget body;
-              if (mode == RefreshStatus.idle) {
-                body = const Text('위로 올려 새로고침');
-              } else if (mode == RefreshStatus.refreshing) {
-                body = const CircularProgressIndicator();
-              } else {
-                body = const Text('새로고침 완료');
-              }
-              return SizedBox(
-                height: 55.0,
-                child: Center(child: body),
-              );
+      body: WillPopScope(
+        onWillPop: () async {
+          return await _confirmQuit(context);
+        },
+        child: Center(
+          child: SmartRefresher(
+            controller: refreshCont,
+            enablePullDown: true,
+            enablePullUp: true,
+            onLoading: () async {
+              await Future.delayed(const Duration(milliseconds: 1000));
+              limit += 1;
+              getJsonData().whenComplete(() {
+                refreshCont.loadComplete();
+              });
             },
-          ),
-          child: data.isEmpty
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.warning_rounded,
-                        color: Colors.red,
-                        size: 70,
+            onRefresh: () async {
+              limit = 1;
+              await Future.delayed(const Duration(milliseconds: 1000));
+              getJsonData().whenComplete(() {
+                refreshCont.refreshCompleted();
+              });
+            },
+            header: CustomHeader(
+              builder: (context, mode) {
+                Widget body;
+                if (mode == RefreshStatus.idle) {
+                  body = const Text('위로 올려 새로고침');
+                } else if (mode == RefreshStatus.refreshing) {
+                  body = const CircularProgressIndicator();
+                } else {
+                  body = const Text('새로고침 완료');
+                }
+                return SizedBox(
+                  height: 55.0,
+                  child: Center(child: body),
+                );
+              },
+            ),
+            child: data.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.warning_rounded,
+                          color: Colors.red,
+                          size: 70,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '글이 없습니다.',
-                      style: TextStyle(
-                        fontSize: 40,
+                      Text(
+                        '글이 없습니다.',
+                        style: TextStyle(
+                          fontSize: 40,
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              : ListView.builder(
-                  itemCount: data.length,
-                  //itemExtent: 5,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return BoardDetail(
-                                  boardid: data[index]['boardid']);
-                            },
-                          ),
-                        ).then((value) {
-                          getJsonData();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          child: Container(
-                            color: Colors.blue[50],
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          data[index]['title'],
-                                          style: const TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        Text(
-                                          (data[index]['updatedate'] == null)
-                                              ? ''
-                                              : '  (수정됨)',
-                                        ),
-                                        Text(
-                                          (data[index]['updatedate'] == null)
-                                              ? '     ${data[index]['writedate']}'
-                                              : '     ${data[index]['updatedate']}',
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w200),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          '${data[index]['writername']}(@${data[index]['writerid']})',
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w300,
+                    ],
+                  )
+                : ListView.builder(
+                    itemCount: data.length,
+                    //itemExtent: 5,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return BoardDetail(
+                                    boardid: data[index]['boardid']);
+                              },
+                            ),
+                          ).then((value) {
+                            getJsonData();
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            child: Container(
+                              color: Colors.blue[50],
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            data[index]['title'],
+                                            style: const TextStyle(
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.w500),
                                           ),
-                                        ),
-                                      ],
+                                          Text(
+                                            (data[index]['updatedate'] == null)
+                                                ? ''
+                                                : '  (수정됨)',
+                                          ),
+                                          Text(
+                                            (data[index]['updatedate'] == null)
+                                                ? '     ${data[index]['writedate']}'
+                                                : '     ${data[index]['updatedate']}',
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w200),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Flexible(
-                                          child: RichText(
-                                              overflow: TextOverflow.ellipsis,
-                                              text: TextSpan(
-                                                text:
-                                                    '${data[index]['content']}',
-                                                style: const TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.black,
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '${data[index]['writername']}(@${data[index]['writerid']})',
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                            child: RichText(
+                                                overflow: TextOverflow.ellipsis,
+                                                text: TextSpan(
+                                                  text:
+                                                      '${data[index]['content']}',
+                                                  style: const TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black,
+                                                  ),
                                                 ),
-                                              ),
-                                              maxLines: 2),
-                                        ),
-                                      ],
+                                                maxLines: 2),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
+          ),
         ),
       ),
     );
@@ -322,5 +328,43 @@ class _HomeState extends State<Home> {
     final pref = await SharedPreferences.getInstance();
     pref.clear();
     return true;
+  }
+
+  //Desc: 앱 종료 확인
+  //Date: 2022-12-26
+  _confirmQuit(BuildContext context){
+    showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text(
+                  '앱 종료',
+                ),
+                content: const Text(
+                  '앱을 종료하시겠습니까?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      '취소',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Static.disposeSharedPreferences();
+                      SystemNavigator.pop();
+                    },
+                    child: const Text(
+                      '확인',
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
   }
 }

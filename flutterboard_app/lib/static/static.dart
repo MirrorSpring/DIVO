@@ -16,4 +16,5 @@ class Static{
   //Date: 2022-12-26
   static RegExp idReg=RegExp(r"^[0-9a-z]*$");
   static RegExp birthdayReg=RegExp(r"^[0-9]{8}$");
+  
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutterboard_app/static/static.dart';
 import 'package:flutterboard_app/views/findid.dart';
 import 'package:flutterboard_app/views/findpw.dart';
@@ -49,140 +50,145 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Center(
-            child: Text(
-              '로그인',
+    return WillPopScope(
+      onWillPop: () async {
+          return await _confirmQuit(context);
+        },
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Center(
+              child: Text(
+                '로그인',
+              ),
             ),
           ),
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                const Icon(
-                  Icons.account_circle_rounded,
-                  size: 200,
-                  color: Colors.blue,
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: idCont,
-                    decoration: const InputDecoration(labelText: "ID"),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 50,
                   ),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: pwCont,
-                    obscureText: true,
-                    decoration: const InputDecoration(labelText: "Password"),
+                  const Icon(
+                    Icons.account_circle_rounded,
+                    size: 200,
+                    color: Colors.blue,
                   ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _loginTry(idCont.text.trim(), pwCont.text.trim(), context)
-                        .whenComplete(() {
-                      if (data[0]['check'] != null) {
-                        _saveId();
-                        _showSuccess(context);
-                      } else {
-                        _showFail(context);
-                      }
-                    });
-                  },
-                  child: const Text(
-                    '로그인',
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      controller: idCont,
+                      decoration: const InputDecoration(labelText: "ID"),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                const Text('회원정보를 잊으셨나요?'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const FindId();
-                            },
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      controller: pwCont,
+                      obscureText: true,
+                      decoration: const InputDecoration(labelText: "Password"),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _loginTry(idCont.text.trim(), pwCont.text.trim(), context)
+                          .whenComplete(() {
+                        if (data[0]['check'] != null) {
+                          _saveId();
+                          _showSuccess(context);
+                        } else {
+                          _showFail(context);
+                        }
+                      });
+                    },
+                    child: const Text(
+                      '로그인',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const Text('회원정보를 잊으셨나요?'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const FindId();
+                              },
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'ID 찾기',
+                          style: TextStyle(
+                            fontSize: 20,
                           ),
-                        );
-                      },
-                      child: const Text(
-                        'ID 찾기',
-                        style: TextStyle(
-                          fontSize: 20,
                         ),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const FindPw();
-                            },
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const FindPw();
+                              },
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          '비밀번호 찾기',
+                          style: TextStyle(
+                            fontSize: 20,
                           ),
-                        );
-                      },
-                      child: const Text(
-                        '비밀번호 찾기',
-                        style: TextStyle(
-                          fontSize: 20,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                const Text(
-                  '처음 오셨나요?',
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const JoinUser();
-                            },
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  const Text(
+                    '처음 오셨나요?',
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const JoinUser();
+                              },
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          '회원가입',
+                          style: TextStyle(
+                            fontSize: 20,
                           ),
-                        );
-                      },
-                      child: const Text(
-                        '회원가입',
-                        style: TextStyle(
-                          fontSize: 20,
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -281,5 +287,44 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
     final pref = await SharedPreferences.getInstance();
     pref.setString('userid', idCont.text);
     pref.setString('username', data[0]['check']);
+  }
+
+  //Desc: 앱 종료 확인
+  //Date: 2022-12-26
+  _confirmQuit(BuildContext context){
+    showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text(
+                  '앱 종료',
+                ),
+                content: const Text(
+                  '앱을 종료하시겠습니까?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      '취소',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Static.disposeSharedPreferences();
+                      Navigator.of(context).pop();
+                      SystemNavigator.pop();
+                    },
+                    child: const Text(
+                      '확인',
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
   }
 }
